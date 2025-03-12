@@ -1,4 +1,4 @@
-/* additional config for ESP12F Relay X4 */
+/* additional config for ESP12F-Relay-X4 */
 
 // only Test if include works
 // #error "Board was not recognized"
@@ -7,7 +7,7 @@
   #undef CODE_IMAGE_STR
 #endif
 // see below
-// #define CODE_IMAGE_STR "ESP12F Relay X4 ..."
+// #define CODE_IMAGE_STR "ESP12F-Relay-X4 ..."
 
 #ifdef MODULE
 #undef MODULE
@@ -46,7 +46,7 @@
         #define USER_TEMPLATE "{\"NAME\":\"ESP12F_Relay_X4_Display\",\"GPIO\":[640,5730,608,1,1,320,1,1,225,224,226,227,1,1],\"FLAG\":0,\"BASE\":18,\"CMND\":\"WebButton1 Relay1|WebButton2 Relay2|WebButton3 Relay3|WebButton4 Relay4|WebButton5 Display\"}"
     #endif
 
-    #define CODE_IMAGE_STR "ESP12F Relay X4 Display" CODE_IMAGE_STR_APPEND
+    #define CODE_IMAGE_STR "ESP12F-Relay-X4 Display" CODE_IMAGE_STR_APPEND
 #elif CFG_SH1106
     //SH1106 1,3'' OLED
     #if MY_LANGUAGE == de_DE
@@ -61,7 +61,7 @@
     #else
         #define USER_BACKLOG "DisplayModel 17; DisplayMode 1"
     #endif
-    #define CODE_IMAGE_STR "ESP12F Relay X4 SSH1106" CODE_IMAGE_STR_APPEND
+    #define CODE_IMAGE_STR "ESP12F-Relay-X4 SSH1106" CODE_IMAGE_STR_APPEND
 #elif CFG_SSD1306
     //SSD1306 0,96'' OLED
     #if MY_LANGUAGE == de_DE
@@ -76,7 +76,7 @@
     #else
         #define USER_BACKLOG "DisplayModel 17; DisplayMode 1"
     #endif
-    #define CODE_IMAGE_STR "ESP12F Relay X4 SSD1306" CODE_IMAGE_STR_APPEND
+    #define CODE_IMAGE_STR "ESP12F-Relay-X4 SSD1306" CODE_IMAGE_STR_APPEND
 #else
     #if MY_LANGUAGE == de_DE
         #define USER_TEMPLATE "{\"NAME\":\"ESP12F_Relay_X4\",\"GPIO\":[1,1,1,1,1,320,1,1,225,224,226,227,1,1],\"FLAG\":0,\"BASE\":18,\"CMND\":\"WebButton1 Relais1|WebButton2 Relais2|WebButton3 Relais3|WebButton4 Relais4\"}"
@@ -84,5 +84,5 @@
         #define USER_TEMPLATE "{\"NAME\":\"ESP12F_Relay_X4\",\"GPIO\":[1,1,1,1,1,320,1,1,225,224,226,227,1,1],\"FLAG\":0,\"BASE\":18,\"CMND\":\"WebButton1 Relay1|WebButton2 Relay2|WebButton3 Relay3|WebButton4 Relay4\"}"
     #endif
     
-    #define CODE_IMAGE_STR "ESP12F Relay X4" CODE_IMAGE_STR_APPEND
+    #define CODE_IMAGE_STR "ESP12F-Relay-X4" CODE_IMAGE_STR_APPEND
 #endif
