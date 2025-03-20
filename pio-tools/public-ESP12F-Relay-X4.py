@@ -8,16 +8,20 @@ environments_to_build = ["tasmota-minimal",
                          "tasmota-ESP12F-Relay-X4-Display-Sensors",
                          "tasmota-ESP12F-Relay-X4-SSD1306",
                          "tasmota-ESP12F-Relay-X4-SSD1306-Sensors",
+                         "tasmota-ESP12F-Relay-X4-SSD1306-BMP280-AHT20",
                          "tasmota-ESP12F-Relay-X4-SH1106",
                          "tasmota-ESP12F-Relay-X4-SH1106-Sensors",
+                         "tasmota-ESP12F-Relay-X4-SH1106-BMP280-AHT20",
                          "tasmota-minimal-DE",
                          "tasmota-ESP12F-Relay-X4-DE",
                          "tasmota-ESP12F-Relay-X4-Display-DE",
                          "tasmota-ESP12F-Relay-X4-Display-Sensors-DE",
                          "tasmota-ESP12F-Relay-X4-SSD1306-DE",
                          "tasmota-ESP12F-Relay-X4-SSD1306-Sensors-DE",
+                         "tasmota-ESP12F-Relay-X4-SSD1306-BMP280-AHT20-DE",
                          "tasmota-ESP12F-Relay-X4-SH1106-DE",
-                         "tasmota-ESP12F-Relay-X4-SH1106-Sensors-DE"
+                         "tasmota-ESP12F-Relay-X4-SH1106-Sensors-DE",
+                         "tasmota-ESP12F-Relay-X4-SH1106-BMP280-AHT20-DE"
                         ]
 
 for target_env in environments_to_build:
