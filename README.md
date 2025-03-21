@@ -28,6 +28,10 @@ This project deals with the [4-CHANNEL X4 RELAY MODULE](https://ayatec.eu/introd
 - SDA - IO 0
 - SCL - IO 2
 
+#### Builds
+[The current builds can be found here](/builds/)
+<br>
+
 ##### The name of the files
 - tasmota-ESP12F-Relay-X4: 
     The board is ready for use
