@@ -33,19 +33,19 @@ This project deals with the [4-CHANNEL X4 RELAY MODULE](https://ayatec.eu/introd
 <br>
 
 ##### The name of the files
-- tasmota-ESP12F-Relay-X4: 
+- tasmota-ESP12F-Relay-X4:  
     The board is ready for use
-- -Display
+- -Display:  
     Display driver is available, a separate display must be configured via the console
-- -Sensors
+- -Sensors:  
     Sensors are available, custom sensors must be configured via the console
-- -SH1106
+- -SH1106:  
     The 1.3 inch OLED SH1106 Display I2C 128 x 64 is ready for use
-- -SSD1306
+- -SSD1306:  
     The 0,96 inch OLED SSD1306 Display I2C 128 x 64 is ready for use
-- -BMP280-AHT20
+- -BMP280-AHT20:  
     The combined Sensor BMP280/AHT20 is ready for use
-- -DE
+- -DE:  
     Build in German
 
 ##### in the example a device with SSH1106 display and BMP280/AHT20 sensor
