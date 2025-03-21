@@ -60,5 +60,5 @@ I have adapted the case for the SH1106 display. This is for the newer - smaller 
 I haven't created a Thingiverse entry yet.
 
 Only my files modified with MeshMixer are available here. The original files can be found at the link on Thingiverse.
-<img src="/3D-Print/AI3M_X4_Relay_Case_Top_Display_pgm.aw.png" height="400px" title="3D Case"> 
+<img src="/3D-Print/AI3M_X4_Relay_Case_Top_Display_pgm.png" height="400px" title="3D Case"> 
 [3D Case: X4_Relay_Case_Top_Display_pgm.stl](3D-Print/X4_Relay_Case_Top_Display_pgm.stl)
