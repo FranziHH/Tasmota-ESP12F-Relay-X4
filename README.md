@@ -6,7 +6,7 @@ This is Forked From https://github.com/arendst/Tasmota
 Alternative firmware for [ESP8266](https://en.wikipedia.org/wiki/ESP8266) and [ESP32](https://en.wikipedia.org/wiki/ESP32) based devices with **easy configuration using webUI, OTA updates, automation using timers or rules, expandability and entirely local control over MQTT, HTTP, Serial or KNX**.
 _Written for PlatformIO._
 
-[original Tasmota Readme.md](TASMOTA-README.MD)
+[Original Tasmota Readme.md](/TASMOTA-README.MD)
 
 <hr>
 
@@ -23,13 +23,12 @@ This project deals with the [4-CHANNEL X4 RELAY MODULE](https://ayatec.eu/introd
 - RY2 - IO 14
 - RY3 - IO 12
 - RY4 - IO 13
-<br>
-##### I2C Display And Sensors
+
+##### I2C Display And Sensors   
 - SDA - IO 0
 - SCL - IO 2
-<br>
-##### The name of the files
 
+##### The name of the files
 - tasmota-ESP12F-Relay-X4: 
     The board is ready for use
 - -Display
