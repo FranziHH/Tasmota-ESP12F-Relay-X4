@@ -35,6 +35,7 @@ variants3
 build
 build_output/*
 builds/*/private
+*private*
 firmware.map
 firmware.asm
 tasmota/tasmota.ino.cpp
