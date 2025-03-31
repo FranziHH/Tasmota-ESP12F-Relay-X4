@@ -27,6 +27,9 @@
 #define USER_TEMPLATE_SENSOR
 #define DISPLAY_MODE "DisplayMode 1; "
 #define CODE_IMAGE_STR_APPEND " [FW]"
+// Change, if timezone is unwanted
+#define USER_BACKLOG_TIMEZONE "; timezone 99"
+
 #ifdef FIRMWARE_SENSORS
     #ifdef CFG_BMP280_AHT20
         #define USER_RULE1 "on System#Boot do RuleTimer1 10 endon on Rules#Timer=1 do Backlog displaytext [l1c4T] [l1c14t]; RuleTimer1 10 endon on tele-BMP280#Temperature do DisplayText [l3c1]Temp  :   %value% C~20~20 endon on tele-BMP280#Pressure do DisplayText [l4c1]Press : %value% hPa~20~20 endon on tele-AHT2X#Temperature do DisplayText [l6c1]Temp  :   %value% C~20~20 endon on tele-AHT2X#Humidity do DisplayText [l7c1]Hum   :   %value% %~20~20 endon on tele-AHT2X#dewpoint do DisplayText [l8c1]DPoint:    %value% C~20~20 endon"
@@ -82,9 +85,9 @@
 
     #define USER_RULE3 ":H,SH1106,128,64,1,I2C,3c,*,*,* :S,0,2,1,0,30,20 :I AE D5,80 A8,3f D3,00 40 8D,14 20,00 A1 C8 DA,12 81,CF D9F1 DB,40 A4 A6 AF :o,AE :O,AF :A,00,10,40,00,02 :i,A6,A7"
     #ifdef USER_BACKLOG_SENSOR
-        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE USER_BACKLOG_SENSOR
+        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE USER_BACKLOG_SENSOR USER_BACKLOG_TIMEZONE
     #else
-        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE
+        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE USER_BACKLOG_TIMEZONE
     #endif
     #define CODE_IMAGE_STR "ESP12F-Relay-X4 SSH1106" CODE_IMAGE_STR_APPEND
 #elif CFG_SSD1306
@@ -96,9 +99,9 @@
 
     #define USER_RULE3 ":H,SSD1306,128,64,1,I2C,3c,*,*,* :S,0,2,1,0,30,20 :I AE D5,80 A8,3F D3,00 40 8D,14 20,00 A1 C8 DA,12 81,9F D9,F1 DB,40 A4 A6 AF :o,AE :O,AF :A,00,10,40,00,00 :i,A6,A7"
     #ifdef USER_BACKLOG_SENSOR
-        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE USER_BACKLOG_SENSOR
+        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE USER_BACKLOG_SENSOR USER_BACKLOG_TIMEZONE
     #else
-        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE
+        #define USER_BACKLOG "DisplayModel 17; " DISPLAY_MODE USER_BACKLOG_TIMEZONE
     #endif
     #define CODE_IMAGE_STR "ESP12F-Relay-X4 SSD1306" CODE_IMAGE_STR_APPEND
 #else
