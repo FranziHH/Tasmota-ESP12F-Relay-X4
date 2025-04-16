@@ -10,6 +10,9 @@
 *.gcda
 dependencies.lock
 
+## own Definitions
+myREADME.md
+
 ## Project files ######
 managed_components
 .platformio
