@@ -3,7 +3,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [14.5.0.3] 
+## [14.6.0.1] 
+### Added
+
+### Breaking Changed
+
+### Changed
+
+### Fixed
+
+### Removed
+
+
+
+## [Released]
+
+## [14.6.0] 20250416
+- Release Ryan
+
+## [14.5.0.3] 20250416
 ### Added
 - Extend command `GPIO` with different display options and allowing updating of module GPIO's in one go
 - Berry `bytes.add()` now accepts 3-bytes values (#23200)
@@ -11,6 +29,8 @@ All notable changes to this project will be documented in this file.
 - AlpineJS 2.8.2 - optional for now (#23259)
 - Support for XMODEM over serial and telnet if enabled with `#define USE_XYZMODEM`
 - PZEM_AC device address in JSON and GUI (#23268)
+- Filesystem command ``UfsList[2]``
+- ESP32 show network interface priority in `Status 5` debug logging (#23302)
 
 ### Breaking Changed
 - HASPmota added `y2_min` and `y2_max` to control the second series of `chart` (#23287)
@@ -26,9 +46,6 @@ All notable changes to this project will be documented in this file.
 - INA226 driver fixes (#23197)
 - TLS increase timeout and fix crash (#23249)
 - Berry `readline` when a line is exactly 98 characters (#23276)
-
-### Removed
-
 
 ## [14.5.0.2] 20250325
 ### Added
@@ -74,8 +91,6 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Too many zeros in RCSwitch received data regression from v14.4.1.4 (#23050)
-
-## [Released]
 
 ## [14.5.0] 20250219
 - Release Ruth
