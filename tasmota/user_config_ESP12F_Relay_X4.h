@@ -3,6 +3,8 @@
 // only Test if include works
 // #error "Board was not recognized"
 
+#define USE_WEB_STATUS_LINE_WIFI
+
 #ifdef CODE_IMAGE_STR
   #undef CODE_IMAGE_STR
 #endif
