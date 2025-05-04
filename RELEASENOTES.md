@@ -121,14 +121,18 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 - WebUI status line for MQTT and TLS, added `FUNC_WEB_STATUS_LEFT` and `FUNC_WEB_STATUS_RIGHT` event [#23354](https://github.com/arendst/Tasmota/issues/23354)
 - Optional Wifi strength indicator in WebUI status line [#23352](https://github.com/arendst/Tasmota/issues/23352)
 - Wireguard VPN [#23347](https://github.com/arendst/Tasmota/issues/23347)
+- WebUI heap status [#23356](https://github.com/arendst/Tasmota/issues/23356)
 
 ### Breaking Changed
 
 ### Changed
+- GPIOViewer from v1.6.2 to v1.6.3 (No functional change)
 - Allow command `WebRefresh` minimum from 1000 to 400 mSec
 
 ### Fixed
+- NimBLE log_level definition conflict [#23366](https://github.com/arendst/Tasmota/issues/23366)
 - Berry `bytes().asstring()` now truncates a string if buffer contains NULL [#23311](https://github.com/arendst/Tasmota/issues/23311)
 - Berry string literals containing NULL are truncated [#23312](https://github.com/arendst/Tasmota/issues/23312)
+- Berry `display.touch_update` wrongly applies resistive calibration [#23363](https://github.com/arendst/Tasmota/issues/23363)
 
 ### Removed
