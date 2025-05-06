@@ -3,26 +3,29 @@
 // only Test if include works
 // #error "Board was not recognized"
 
+#ifdef MDNS_ENABLED
+    #undef MDNS_ENABLED
+#endif
+#define MDNS_ENABLED true
+
 #define USE_WEB_STATUS_LINE_WIFI
 
 #ifdef CODE_IMAGE_STR
-  #undef CODE_IMAGE_STR
+    #undef CODE_IMAGE_STR
 #endif
 // see below
 // #define CODE_IMAGE_STR "ESP12F-Relay-X4 ..."
 
 #ifdef MODULE
-#undef MODULE
+    #undef MODULE
 #endif
 #define MODULE                 USER_MODULE   // [Module] Select default model (the list is kModuleNiceList() in file tasmota_template.h) USER_MODULE is the TEMPLATE
 
-#ifdef FALLBACK_MODULE
-#undef FALLBACK_MODULE
-#endif
+
 #define FALLBACK_MODULE        USER_MODULE   // to Select the default model as FALLBACK when the user does a RESET 1 
 
 #ifdef USER_TEMPLATE
-#undef USER_TEMPLATE
+    #undef USER_TEMPLATE
 #endif
 
 #define USER_TEMPLATE_DISPLAY
