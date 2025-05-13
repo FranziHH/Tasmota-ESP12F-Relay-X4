@@ -22,6 +22,7 @@ managed_components
 .cache
 .dummy
 sdkconfig.*
+sdkconfig.defaults
 data
 unpacked_fs
 unpacked_boards
