@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - HASPmota auto-dimming when no touch (#23425)
 - Provide serial upload port from VSC to PIO (#23436)
 - Berry support for `sortedmap` (#23441)
+- Berry `introspect.module` option to not cache module entry
+- Berry `webserver.remove_route` to revert `webserver.on`
 
 ### Breaking Changed
 
