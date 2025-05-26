@@ -21,7 +21,9 @@
 #endif
 #define MODULE                 USER_MODULE   // [Module] Select default model (the list is kModuleNiceList() in file tasmota_template.h) USER_MODULE is the TEMPLATE
 
-
+#ifdef FALLBACK_MODULE
+    #undef FALLBACK_MODULE
+#endif
 #define FALLBACK_MODULE        USER_MODULE   // to Select the default model as FALLBACK when the user does a RESET 1 
 
 #ifdef USER_TEMPLATE
