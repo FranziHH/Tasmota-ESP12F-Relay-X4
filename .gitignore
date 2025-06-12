@@ -12,6 +12,7 @@ dependencies.lock
 
 ## own Definitions
 myREADME.md
+*.bat
 
 ## Project files ######
 managed_components
