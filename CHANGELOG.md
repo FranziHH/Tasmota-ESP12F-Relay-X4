@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ## [15.0.1.1]
 ### Added
 - I2S additions (#23543)
+- Berry f-strings now support ':' in expression
 
 ### Breaking Changed
 
@@ -19,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - Berry vulnerability in JSON parsing for unicode
 - Berry fix security issues in `int64` and improve documentation
 - Berry fix security issues in `berry_mapping` and improve documentation
+- Berry Hue fix regression from #23429
 
 ### Removed
 
