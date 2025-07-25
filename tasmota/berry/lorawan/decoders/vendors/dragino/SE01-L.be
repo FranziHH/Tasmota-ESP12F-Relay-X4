@@ -13,8 +13,7 @@ global.se01LNodes = {}
 class LwDecoSE01L
   static def decodeUplink(Node, RSSI, FPort, Bytes)
     var data = {"Device":"Dragino SE01-LB/LS"}
-    data.insert("Node", Node)
-
+    
     var valid_values = false
     var last_seen = 1451602800
     var battery_last_seen = 1451602800

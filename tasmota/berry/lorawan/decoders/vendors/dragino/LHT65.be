@@ -11,9 +11,7 @@ global.lht65Nodes = {}
 class LwDecoLHT65
   static def decodeUplink(Node, RSSI, FPort, Bytes)
     var data = {"Device":"Dragino LHT65"}
-    data.insert("Node", Node)
-    data.insert("poll_message_status",(Bytes[6] & 0x40) >> 6)
-
+    
     var valid_values = false
     var last_seen = 1451602800
     var battery_last_seen = 1451602800
@@ -40,6 +38,8 @@ class LwDecoLHT65
     var NoConnect = (Bytes[6] & 0x80) >> 7
 
     ## SENSOR DATA ##
+    data.insert("poll_message_status",(Bytes[6] & 0x40) >> 6)
+
     if 2 == FPort && Bytes.size() == 11
       var TempC 
 

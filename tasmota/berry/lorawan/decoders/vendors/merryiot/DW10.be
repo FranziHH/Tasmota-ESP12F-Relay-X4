@@ -11,8 +11,7 @@ global.dw10Nodes = {}
 class LwDecoDW10
   static def decodeUplink(Node, RSSI, FPort, Bytes)
     var data = {"Device":"MerryIoT DW10"}
-    data.insert("Node", Node)
-
+    
     var valid_values = false
     var last_seen = 1451602800
     var battery_last_seen = 1451602800

@@ -12,8 +12,7 @@ global.psli5Nodes = {}
 class LwDecoPSLI5
   static def decodeUplink(Node, RSSI, FPort, Bytes)
     var data = {"Device":"Dragino PS-LB/LS-I5"}
-    data.insert("Node", Node)
-
+    
     var valid_values = false
     var last_seen = 1451602800
     var battery_last_seen = 1451602800
