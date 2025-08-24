@@ -93,6 +93,8 @@ import "providers/static_value_provider.be" as static_value_provider
 register_to_animation(static_value_provider)
 import "providers/oscillator_value_provider.be" as oscillator_value_provider
 register_to_animation(oscillator_value_provider)
+import "providers/strip_length_provider.be" as strip_length_provider
+register_to_animation(strip_length_provider)
 
 # Import color providers
 import "providers/color_provider.be" as color_provider
@@ -156,6 +158,9 @@ register_to_animation(rich_palette_animation)
 
 # Function called to initialize the `Leds` and `engine` objects
 #
+# It keeps track of previously created engines and strips to reuse
+# when called with the same arguments
+#
 # Parameters:
 #   l - list of arguments (vararg)
 #
@@ -164,8 +169,23 @@ register_to_animation(rich_palette_animation)
 def animation_init_strip(*l)
   import global
   import animation
-  var strip = call(global.Leds, l)    # call global.Leds() with vararg
-  var engine = animation.create_engine(strip)
+  import introspect
+  # we keep a hash of strip configurations to reuse existing engines
+  if !introspect.contains(animation, "_strips")
+    animation._engines = {}
+  end
+
+  var l_as_string = str(l)
+  var engine = animation._engines.find(l_as_string)
+  if (engine != nil)
+    # we reuse it
+    engine.stop()
+    engine.clear()
+  else
+    var strip = call(global.Leds, l)    # call global.Leds() with vararg
+    engine = animation.create_engine(strip)
+  end
+
   return engine
 end
 animation.init_strip = animation_init_strip

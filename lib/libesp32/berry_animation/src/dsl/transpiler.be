@@ -102,12 +102,10 @@ class SimpleDSLTranspiler
     # Handle keywords
     if tok.type == animation_dsl.Token.KEYWORD
       if tok.value == "strip"
-        if !is_first_real_statement
-          self.error("'strip' declaration must be the first statement")
-          self.skip_statement()
-          return
-        end
-        self.process_strip()
+        # Strip directive is temporarily disabled but remains a reserved keyword
+        self.error("'strip' directive is temporarily disabled. Strip configuration is handled automatically.")
+        self.skip_statement()
+        return
       else
         # For any other statement, ensure strip is initialized
         if !self.strip_initialized
@@ -220,7 +218,7 @@ class SimpleDSLTranspiler
     var palette_entries = []
     
     while !self.at_end() && !self.check_right_bracket()
-      self.skip_whitespace()
+      self.skip_whitespace_including_newlines()
       
       if self.check_right_bracket()
         break
@@ -237,11 +235,24 @@ class SimpleDSLTranspiler
       var vrgb_entry = self.convert_to_vrgb(value, color)
       palette_entries.push(f'"{vrgb_entry}"')
       
-      self.skip_whitespace()
+      # Skip whitespace but preserve newlines for separator detection
+      while !self.at_end()
+        var tok = self.current()
+        if tok != nil && tok.type == animation_dsl.Token.COMMENT
+          self.next()
+        else
+          break
+        end
+      end
       
+      # Check for entry separator: comma OR newline OR end of palette
       if self.current() != nil && self.current().type == animation_dsl.Token.COMMA
         self.next()  # skip comma
-        self.skip_whitespace()
+        self.skip_whitespace_including_newlines()
+      elif self.current() != nil && self.current().type == animation_dsl.Token.NEWLINE
+        # Newline acts as entry separator - skip it and continue
+        self.next()  # skip newline
+        self.skip_whitespace_including_newlines()
       elif !self.check_right_bracket()
         self.error("Expected ',' or ']' in palette definition")
         break
@@ -324,16 +335,17 @@ class SimpleDSLTranspiler
   end
   
   # Process strip configuration: strip length 60
-  def process_strip()
-    self.next()  # skip 'strip'
-    var prop = self.expect_identifier()
-    if prop == "length"
-      var length = self.expect_number()
-      var inline_comment = self.collect_inline_comment()
-      self.add(f"var engine = animation.init_strip({length}){inline_comment}")
-      self.strip_initialized = true  # Mark that strip was initialized
-    end
-  end
+  # Temporarily disabled
+  # def process_strip()
+  #   self.next()  # skip 'strip'
+  #   var prop = self.expect_identifier()
+  #   if prop == "length"
+  #     var length = self.expect_number()
+  #     var inline_comment = self.collect_inline_comment()
+  #     self.add(f"var engine = animation.init_strip({length}){inline_comment}")
+  #     self.strip_initialized = true  # Mark that strip was initialized
+  #   end
+  # end
   
   # Process variable assignment: set brightness = 80%
   def process_set()
@@ -731,6 +743,18 @@ class SimpleDSLTranspiler
     end
   end
   
+  # Skip whitespace including newlines (for parameter parsing contexts)
+  def skip_whitespace_including_newlines()
+    while !self.at_end()
+      var tok = self.current()
+      if tok != nil && (tok.type == animation_dsl.Token.COMMENT || tok.type == animation_dsl.Token.NEWLINE)
+        self.next()
+      else
+        break
+      end
+    end
+  end
+  
   # Collect inline comment if present and return it formatted for Berry code
   def collect_inline_comment()
     var tok = self.current()
@@ -878,7 +902,7 @@ class SimpleDSLTranspiler
     end
     
     while !self.at_end() && !self.check_right_paren()
-      self.skip_whitespace()
+      self.skip_whitespace_including_newlines()
       
       if self.check_right_paren()
         break
@@ -899,11 +923,24 @@ class SimpleDSLTranspiler
       # Generate parameter assignment immediately
       self.add(f"{var_name}.{param_name} = {param_value}{inline_comment}")
       
-      self.skip_whitespace()
+      # Skip whitespace but preserve newlines for separator detection
+      while !self.at_end()
+        var tok = self.current()
+        if tok != nil && tok.type == animation_dsl.Token.COMMENT
+          self.next()
+        else
+          break
+        end
+      end
       
+      # Check for parameter separator: comma OR newline OR end of parameters
       if self.current() != nil && self.current().type == animation_dsl.Token.COMMA
         self.next()  # skip comma
-        self.skip_whitespace()
+        self.skip_whitespace_including_newlines()
+      elif self.current() != nil && self.current().type == animation_dsl.Token.NEWLINE
+        # Newline acts as parameter separator - skip it and continue
+        self.next()  # skip newline
+        self.skip_whitespace_including_newlines()
       elif !self.check_right_paren()
         self.error("Expected ',' or ')' in function arguments")
         break
@@ -1356,13 +1393,15 @@ class SimpleDSLTranspiler
   # @param var_name: string - Variable name to assign parameters to
   # @param func_name: string - Animation function name for validation
   def _process_named_arguments_for_animation(var_name, func_name)
+    # Debug: print that we're entering this method
+    # print(f"DEBUG: Entering _process_named_arguments_for_animation for {func_name}")
     self.expect_left_paren()
     
     # Create animation instance once for parameter validation
     var animation_instance = self._create_animation_instance_for_validation(func_name)
     
     while !self.at_end() && !self.check_right_paren()
-      self.skip_whitespace()
+      self.skip_whitespace_including_newlines()
       
       if self.check_right_paren()
         break
@@ -1383,11 +1422,24 @@ class SimpleDSLTranspiler
       # Generate parameter assignment immediately
       self.add(f"{var_name}.{param_name} = {param_value}{inline_comment}")
       
-      self.skip_whitespace()
+      # Skip whitespace but preserve newlines for separator detection
+      while !self.at_end()
+        var tok = self.current()
+        if tok != nil && tok.type == animation_dsl.Token.COMMENT
+          self.next()
+        else
+          break
+        end
+      end
       
+      # Check for parameter separator: comma OR newline OR end of parameters
       if self.current() != nil && self.current().type == animation_dsl.Token.COMMA
         self.next()  # skip comma
-        self.skip_whitespace()
+        self.skip_whitespace_including_newlines()
+      elif self.current() != nil && self.current().type == animation_dsl.Token.NEWLINE
+        # Newline acts as parameter separator - skip it and continue
+        self.next()  # skip newline
+        self.skip_whitespace_including_newlines()
       elif !self.check_right_paren()
         self.error("Expected ',' or ')' in function arguments")
         break
@@ -1502,7 +1554,7 @@ class SimpleDSLTranspiler
     var instance = self._create_instance_for_validation(func_name)
     
     while !self.at_end() && !self.check_right_paren()
-      self.skip_whitespace()
+      self.skip_whitespace_including_newlines()
       
       if self.check_right_paren()
         break
@@ -1523,11 +1575,24 @@ class SimpleDSLTranspiler
       # Generate parameter assignment immediately
       self.add(f"{var_name}.{param_name} = {param_value}{inline_comment}")
       
-      self.skip_whitespace()
+      # Skip whitespace but preserve newlines for separator detection
+      while !self.at_end()
+        var tok = self.current()
+        if tok != nil && tok.type == animation_dsl.Token.COMMENT
+          self.next()
+        else
+          break
+        end
+      end
       
+      # Check for parameter separator: comma OR newline OR end of parameters
       if self.current() != nil && self.current().type == animation_dsl.Token.COMMA
         self.next()  # skip comma
-        self.skip_whitespace()
+        self.skip_whitespace_including_newlines()
+      elif self.current() != nil && self.current().type == animation_dsl.Token.NEWLINE
+        # Newline acts as parameter separator - skip it and continue
+        self.next()  # skip newline
+        self.skip_whitespace_including_newlines()
       elif !self.check_right_paren()
         self.error("Expected ',' or ')' in function arguments")
         break
