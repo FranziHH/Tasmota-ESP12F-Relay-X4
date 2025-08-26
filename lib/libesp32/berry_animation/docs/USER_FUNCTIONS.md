@@ -32,7 +32,7 @@ animation.register_user_function("breathing", my_breathing)
 
 Call your function just like built-in animations:
 
-```dsl
+```berry
 # Use your custom function
 animation calm = breathing(blue, 4s)
 animation energetic = breathing(red, 1s)
@@ -60,7 +60,7 @@ end
 animation.register_user_function("bright", solid_bright)
 ```
 
-```dsl
+```berry
 animation bright_red = bright(red, 80%)
 animation dim_blue = bright(blue, 30%)
 ```
@@ -82,7 +82,7 @@ end
 animation.register_user_function("fire", custom_fire)
 ```
 
-```dsl
+```berry
 animation campfire = fire(200, 2s)
 animation torch = fire(255, 500ms)
 ```
@@ -101,7 +101,7 @@ end
 animation.register_user_function("sparkles", sparkles)
 ```
 
-```dsl
+```berry
 animation stars = sparkles(white, 12, 300ms)
 animation fairy_dust = sparkles(#FFD700, 8, 500ms)
 ```
@@ -121,7 +121,7 @@ end
 animation.register_user_function("pulse_at", pulse_at)
 ```
 
-```dsl
+```berry
 animation left_pulse = pulse_at(green, 5, 3, 2s)
 animation right_pulse = pulse_at(blue, 25, 3, 2s)
 ```
@@ -174,7 +174,7 @@ animation.register_user_function("strobe", warning_strobe)
 animation.register_user_function("alert", gentle_alert)
 ```
 
-```dsl
+```berry
 animation emergency = strobe()
 animation notification = alert()
 animation custom_police = police(500ms)
@@ -293,6 +293,81 @@ def breathing_effect(engine, color, period, min_brightness, max_brightness)
 end
 ```
 
+## User Functions in Computed Parameters
+
+User functions can be used in computed parameter expressions alongside mathematical functions, creating powerful dynamic animations:
+
+### Simple User Function in Computed Parameter
+
+```berry
+# Simple user function call in property assignment
+animation base = solid(color=blue, priority=10)
+base.opacity = rand_demo()  # User function as computed parameter
+```
+
+### User Functions with Mathematical Operations
+
+```berry
+# Get strip length for calculations
+set strip_len = strip_length()
+
+# Mix user functions with mathematical functions
+animation dynamic_solid = solid(
+  color=purple
+  opacity=max(50, min(255, rand_demo() + 100))  # Random opacity with bounds
+  priority=15
+)
+```
+
+### User Functions in Complex Expressions
+
+```berry
+# Use user function in arithmetic expressions
+animation random_effect = solid(
+  color=cyan
+  opacity=abs(rand_demo() - 128) + 64  # Random variation around middle value
+  priority=12
+)
+```
+
+### How It Works
+
+When you use user functions in computed parameters:
+
+1. **Automatic Detection**: The transpiler automatically detects user functions in expressions
+2. **Single Closure**: The entire expression is wrapped in a single efficient closure
+3. **Engine Access**: User functions receive `self.engine` in the closure context
+4. **Mixed Operations**: User functions work seamlessly with mathematical functions and arithmetic
+
+**Generated Code Example:**
+```berry
+# DSL code
+animation.opacity = max(100, breathing(red, 2000))
+```
+
+**Transpiles to:**
+```berry
+animation.opacity = animation.create_closure_value(engine, 
+  def (self, param_name, time_ms) 
+    return (self.max(100, animation.get_user_function('breathing')(self.engine, 0xFFFF0000, 2000))) 
+  end)
+```
+
+### Available User Functions
+
+The following user functions are available by default:
+
+| Function | Parameters | Description |
+|----------|------------|-------------|
+| `rand_demo()` | none | Returns a random value (0-255) for demonstration |
+
+### Best Practices for Computed Parameters
+
+1. **Keep expressions readable**: Break complex expressions across multiple lines
+2. **Use meaningful variable names**: `set strip_len = strip_length()` not `set s = strip_length()`
+3. **Combine wisely**: Mix user functions with math functions for rich effects
+4. **Test incrementally**: Start simple and build up complex expressions
+
 ## Loading and Using Functions
 
 ### In Tasmota autoexec.be
@@ -361,7 +436,7 @@ end
 ### How the DSL Transpiler Works
 
 When you write DSL like this:
-```dsl
+```berry
 animation my_anim = my_function(arg1, arg2)
 ```
 

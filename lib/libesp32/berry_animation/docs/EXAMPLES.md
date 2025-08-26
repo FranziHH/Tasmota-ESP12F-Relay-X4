@@ -5,21 +5,21 @@ Essential examples showcasing the Tasmota Berry Animation Framework using DSL sy
 ## Basic Animations
 
 ### 1. Solid Color
-```dsl
+```berry
 color red = 0xFF0000
 animation red_solid = solid(color=red)
 run red_solid
 ```
 
 ### 2. Pulsing Effect
-```dsl
+```berry
 color blue = 0x0000FF
 animation blue_pulse = pulsating_animation(color=blue, period=2s)
 run blue_pulse
 ```
 
 ### 3. Moving Comet
-```dsl
+```berry
 color cyan = 0x00FFFF
 animation comet_trail = comet_animation(color=cyan, tail_length=8, speed=100ms, direction=1)
 run comet_trail
@@ -28,7 +28,7 @@ run comet_trail
 ## Using Value Providers
 
 ### 4. Breathing Effect
-```dsl
+```berry
 set breathing = smooth(min_value=50, max_value=255, period=3s)
 color white = 0xFFFFFF
 animation breathing_white = solid(color=white)
@@ -37,7 +37,7 @@ run breathing_white
 ```
 
 ### 5. Color Cycling
-```dsl
+```berry
 color rainbow = rainbow_color_provider(period=5s)
 animation rainbow_cycle = solid(color=rainbow)
 run rainbow_cycle
@@ -46,7 +46,7 @@ run rainbow_cycle
 ## Palette Animations
 
 ### 6. Fire Effect
-```dsl
+```berry
 palette fire_colors = [
   (0, 0x000000),    # Black
   (128, 0xFF0000),  # Red
@@ -61,7 +61,7 @@ run fire_effect
 ## Sequences
 
 ### 7. RGB Show
-```dsl
+```berry
 color red = 0xFF0000
 color green = 0x00FF00
 color blue = 0x0000FF
@@ -79,7 +79,7 @@ run rgb_show
 ```
 
 ### 8. Sunrise Sequence
-```dsl
+```berry
 color deep_blue = 0x000080
 color orange = 0xFFA500
 color yellow = 0xFFFF00
@@ -96,10 +96,44 @@ sequence sunrise_show {
 run sunrise_show
 ```
 
+## User Functions in Computed Parameters
+
+### 9. Simple User Function
+```berry
+# Simple user function in computed parameter
+animation random_base = solid(color=blue, priority=10)
+random_base.opacity = rand_demo()
+run random_base
+```
+
+### 10. User Function with Math Operations
+```berry
+# Mix user functions with mathematical functions
+animation random_bounded = solid(
+  color=purple
+  opacity=max(50, min(255, rand_demo() + 100))
+  priority=15
+)
+run random_bounded
+```
+
+### 11. User Function in Arithmetic Expression
+```berry
+# Use user function in arithmetic expressions
+animation random_variation = solid(
+  color=cyan
+  opacity=abs(rand_demo() - 128) + 64
+  priority=12
+)
+run random_variation
+```
+
+See `anim_examples/user_functions_demo.anim` for a complete working example.
+
 ## Advanced Examples
 
-### 9. Dynamic Position
-```dsl
+### 13. Dynamic Position
+```berry
 strip length 60
 
 set moving_position = smooth(min_value=5, max_value=55, period=4s)
@@ -114,8 +148,8 @@ animation moving_pulse = beacon_animation(
 run moving_pulse
 ```
 
-### 10. Multi-Layer Effect
-```dsl
+### 14. Multi-Layer Effect
+```berry
 # Base layer - slow breathing
 set breathing = smooth(min_value=100, max_value=255, period=4s)
 color base_blue = 0x000080
@@ -137,7 +171,7 @@ run layered_effect
 ## Tips for Creating Animations
 
 ### Start Simple
-```dsl
+```berry
 # Begin with basic colors and effects
 color my_color = 0xFF0000
 animation simple = solid(color=my_color)
@@ -145,7 +179,7 @@ run simple
 ```
 
 ### Use Meaningful Names
-```dsl
+```berry
 # Good - descriptive names
 color sunset_orange = 0xFF8C00
 animation evening_glow = pulsating_animation(color=sunset_orange, period=4s)

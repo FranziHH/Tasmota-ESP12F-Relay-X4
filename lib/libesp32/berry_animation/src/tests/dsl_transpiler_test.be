@@ -28,8 +28,8 @@ def test_basic_transpilation()
   assert(berry_code != nil, "Should generate Berry code")
   assert(string.find(berry_code, "var engine = animation.init_strip()") >= 0, "Should generate strip configuration")
   assert(string.find(berry_code, "var custom_red_ = 0xFFFF0000") >= 0, "Should generate color definition")
-  assert(string.find(berry_code, "def sequence_demo()") >= 0, "Should generate sequence function")
-  assert(string.find(berry_code, "sequence_demo()") >= 0, "Should generate sequence call")
+  assert(string.find(berry_code, "var demo_ = (def (engine)") >= 0, "Should generate sequence closure")
+  assert(string.find(berry_code, "engine.add_sequence_manager(demo_)") >= 0, "Should add sequence manager")
   
   # print("Generated Berry code:")
   # print("==================================================")
@@ -156,11 +156,10 @@ def test_sequences()
   
   var berry_code = animation_dsl.compile(dsl_source)
   assert(berry_code != nil, "Should compile sequence")
-  assert(string.find(berry_code, "def sequence_test_seq()") >= 0, "Should define sequence function")
+  assert(string.find(berry_code, "var test_seq_ = (def (engine)") >= 0, "Should define sequence closure")
   assert(string.find(berry_code, "animation.create_play_step(animation.global('blue_anim_'), 3000)") >= 0, "Should reference animation")
-  assert(string.find(berry_code, "engine.add_sequence_manager(seq_manager)") >= 0, "Should add sequence manager to engine")
+  assert(string.find(berry_code, "engine.add_sequence_manager(test_seq_)") >= 0, "Should add sequence manager to engine")
   assert(string.find(berry_code, "engine.start()") >= 0, "Should start engine")
-  assert(string.find(berry_code, "sequence_test_seq()") >= 0, "Should call sequence")
   
   print("✓ Sequences test passed")
   return true
@@ -203,10 +202,9 @@ def test_multiple_run_statements()
   assert(start_count == 1, f"Should have exactly 1 engine.start() call, found {start_count}")
   
   # Check that all animations are added to the engine
-  assert(string.find(berry_code, "# Start all animations/sequences") >= 0, "Should have consolidated startup comment")
-  assert(string.find(berry_code, "engine.add_animation(animation.global('red_anim_'))") >= 0, "Should add red_anim to engine")
-  assert(string.find(berry_code, "engine.add_animation(animation.global('blue_anim_'))") >= 0, "Should add blue_anim to engine")
-  assert(string.find(berry_code, "engine.add_animation(animation.global('green_anim_'))") >= 0, "Should add green_anim to engine")
+  assert(string.find(berry_code, "engine.add_animation(red_anim_)") >= 0, "Should add red_anim to engine")
+  assert(string.find(berry_code, "engine.add_animation(blue_anim_)") >= 0, "Should add blue_anim to engine")
+  assert(string.find(berry_code, "engine.add_animation(green_anim_)") >= 0, "Should add green_anim to engine")
   
   # Verify the engine.start() comes after all animations are added
   var start_line_index = -1
@@ -254,8 +252,8 @@ def test_multiple_run_statements()
   assert(mixed_start_count == 1, f"Mixed scenario should have exactly 1 engine.start() call, found {mixed_start_count}")
   
   # Check that both animation and sequence are handled
-  assert(string.find(mixed_berry_code, "engine.add_animation(animation.global('red_anim_'))") >= 0, "Should add animation to engine")
-  assert(string.find(mixed_berry_code, "engine.add_sequence_manager(seq_manager)") >= 0, "Should add sequence to engine")
+  assert(string.find(mixed_berry_code, "engine.add_animation(red_anim_)") >= 0, "Should add animation to engine")
+  assert(string.find(mixed_berry_code, "engine.add_sequence_manager(blue_seq_)") >= 0, "Should add sequence to engine")
   
   print("✓ Multiple run statements test passed")
   return true
@@ -289,6 +287,132 @@ def test_variable_assignments()
   assert(string.find(provider_code, "duration = 3000") >= 0, "Should convert smooth duration to milliseconds")
   
   print("✓ Variable assignments test passed")
+  return true
+end
+
+# Test computed values and expressions (regression tests)
+def test_computed_values()
+  print("Testing computed values and expressions...")
+  
+  # Test computed values with single resolve calls (regression test for double resolve issue)
+  var computed_dsl = "set strip_len = strip_length()\n" +
+    "animation stream1 = comet_animation(\n" +
+    "  color=red\n" +
+    "  tail_length=abs(strip_len / 4)\n" +
+    "  speed=1.5\n" +
+    "  priority=10\n" +
+    ")"
+  
+  var computed_code = animation_dsl.compile(computed_dsl)
+  assert(computed_code != nil, "Should compile computed values")
+  
+  # Check for single resolve calls (no double wrapping)
+  var expected_single_resolve = "self.abs(self.resolve(strip_len_, param_name, time_ms) / 4)"
+  assert(string.find(computed_code, expected_single_resolve) >= 0, "Should generate single resolve call in computed expression")
+  
+  # Check that there are no double resolve calls
+  var double_resolve_count = 0
+  var pos = 0
+  while true
+    pos = string.find(computed_code, "self.resolve(self.resolve(", pos)
+    if pos < 0
+      break
+    end
+    double_resolve_count += 1
+    pos += 1
+  end
+  assert(double_resolve_count == 0, f"Should have no double resolve calls, found {double_resolve_count}")
+  
+  # Test complex expressions with single closure (regression test for nested closure issue)
+  var complex_expr_dsl = "set strip_len = strip_length()\n" +
+    "set base_value = 5\n" +
+    "animation stream2 = comet_animation(\n" +
+    "  color=blue\n" +
+    "  tail_length=strip_len / 8 + (2 * strip_len) - 10\n" +
+    "  speed=(base_value + strip_len) * 2.5\n" +
+    "  priority=max(1, min(10, strip_len / 6))\n" +
+    ")"
+  
+  var complex_code = animation_dsl.compile(complex_expr_dsl)
+  assert(complex_code != nil, "Should compile complex expressions")
+  
+  # Count closure creations - each computed parameter should have exactly one closure
+  var closure_count = 0
+  pos = 0
+  while true
+    pos = string.find(complex_code, "animation.create_closure_value(", pos)
+    if pos < 0
+      break
+    end
+    closure_count += 1
+    pos += 1
+  end
+  assert(closure_count == 3, f"Should have exactly 3 closures for 3 computed parameters, found {closure_count}")
+  
+  # Check that complex expressions are in single closures (no nested closures)
+  var nested_closure_count = 0
+  pos = 0
+  while true
+    # Look for closure inside closure pattern
+    var closure_start = string.find(complex_code, "animation.create_closure_value(", pos)
+    if closure_start < 0
+      break
+    end
+    var closure_end = string.find(complex_code, ") end)", closure_start)
+    if closure_end < 0
+      break
+    end
+    var closure_content = complex_code[closure_start..closure_end]
+    if string.find(closure_content, "animation.create_closure_value(") > 0
+      nested_closure_count += 1
+    end
+    pos = closure_end + 1
+  end
+  assert(nested_closure_count == 0, f"Should have no nested closures, found {nested_closure_count}")
+  
+  # Verify specific complex expression patterns
+  var expected_complex_tail = "self.resolve(strip_len_, param_name, time_ms) / 8 + (2 * self.resolve(strip_len_, param_name, time_ms)) - 10"
+  assert(string.find(complex_code, expected_complex_tail) >= 0, "Should generate correct complex tail_length expression")
+  
+  var expected_complex_speed = "(self.resolve(base_value_, param_name, time_ms) + self.resolve(strip_len_, param_name, time_ms)) * 2.5"
+  assert(string.find(complex_code, expected_complex_speed) >= 0, "Should generate correct complex speed expression")
+  
+  var expected_complex_priority = "self.max(1, self.min(10, self.resolve(strip_len_, param_name, time_ms) / 6))"
+  assert(string.find(complex_code, expected_complex_priority) >= 0, "Should generate correct complex priority expression with math functions")
+  
+  # Test simple expressions that don't need closures
+  var simple_expr_dsl = "set strip_len = strip_length()\n" +
+    "animation simple = comet_animation(\n" +
+    "  color=red\n" +
+    "  tail_length=strip_len\n" +
+    "  speed=1.5\n" +
+    "  priority=10\n" +
+    ")"
+  
+  var simple_code = animation_dsl.compile(simple_expr_dsl)
+  assert(simple_code != nil, "Should compile simple expressions")
+  
+  # Simple variable reference should not create a closure
+  assert(string.find(simple_code, "simple_.tail_length = strip_len_") >= 0, "Should generate direct variable reference without closure")
+  
+  # Test mathematical functions in computed expressions
+  var math_expr_dsl = "set strip_len = strip_length()\n" +
+    "animation math_test = comet_animation(\n" +
+    "  color=red\n" +
+    "  tail_length=max(1, min(strip_len, 20))\n" +
+    "  speed=abs(strip_len - 30)\n" +
+    "  priority=round(strip_len / 6)\n" +
+    ")"
+  
+  var math_code = animation_dsl.compile(math_expr_dsl)
+  assert(math_code != nil, "Should compile mathematical expressions")
+  
+  # Check that mathematical functions are prefixed with self. in closures
+  assert(string.find(math_code, "self.max(1, self.min(") >= 0, "Should prefix math functions with self. in closures")
+  assert(string.find(math_code, "self.abs(") >= 0, "Should prefix abs function with self. in closures")
+  assert(string.find(math_code, "self.round(") >= 0, "Should prefix round function with self. in closures")
+  
+  print("✓ Computed values test passed")
   return true
 end
 
@@ -391,8 +515,8 @@ def test_complex_dsl()
     # Check for key components
     assert(string.find(berry_code, "var engine = animation.init_strip()") >= 0, "Should have default strip initialization")
     assert(string.find(berry_code, "var custom_red_ = 0xFFFF0000") >= 0, "Should have color definitions")
-    assert(string.find(berry_code, "def sequence_demo()") >= 0, "Should have sequence definition")
-    assert(string.find(berry_code, "sequence_demo()") >= 0, "Should have execution")
+    assert(string.find(berry_code, "var demo_ = (def (engine)") >= 0, "Should have sequence definition")
+    assert(string.find(berry_code, "engine.add_sequence_manager(demo_)") >= 0, "Should have execution")
     
     print("Generated code structure looks correct")
   else
@@ -542,10 +666,10 @@ def test_property_assignments()
   
   assert(berry_code != nil, "Should generate Berry code with property assignments")
   
-  # Check that property assignments are generated correctly
-  assert(string.find(berry_code, "animation.global('red_anim_').pos = 15") >= 0, "Should generate pos property assignment")
-  assert(string.find(berry_code, "animation.global('red_anim_').opacity = 128") >= 0, "Should generate opacity property assignment")
-  assert(string.find(berry_code, "animation.global('red_anim_').priority = 10") >= 0, "Should generate priority property assignment")
+  # Check that property assignments are generated correctly (new behavior: direct underscore access)
+  assert(string.find(berry_code, "red_anim_.pos = 15") >= 0, "Should generate pos property assignment")
+  assert(string.find(berry_code, "red_anim_.opacity = 128") >= 0, "Should generate opacity property assignment")
+  assert(string.find(berry_code, "red_anim_.priority = 10") >= 0, "Should generate priority property assignment")
   
   # Verify the generated code compiles
   try
@@ -624,10 +748,16 @@ def test_easing_keywords()
   
   assert(berry_code != nil, "Should generate Berry code with easing keywords")
   
-  # Check that all easing keywords are properly converted to animation.global() calls with new signature
+  # Check that all easing keywords are properly converted to direct animation module access
   var easing_keywords = ["linear", "smooth", "ease_in", "ease_out", "ramp", "square"]
   for easing : easing_keywords
-    assert(string.find(berry_code, f"animation.global('{easing}_', '{easing}')") >= 0, f"Should convert {easing} to animation.global('{easing}_', '{easing}')")
+    # Check if the easing keyword exists in animation module (they're lowercase)
+    import introspect
+    if introspect.contains(animation, easing)
+      assert(string.find(berry_code, f"animation.{easing}") >= 0, f"Should convert {easing} to animation.{easing}")
+    else
+      assert(string.find(berry_code, f"{easing}_") >= 0, f"Should convert {easing} to {easing}_")
+    end
   end
   
   # Test easing keywords as function calls (regression test for breathing_colors.anim issue)
@@ -641,7 +771,7 @@ def test_easing_keywords()
   assert(function_call_code != nil, "Should handle easing keywords as function calls")
   # Note: Function calls like smooth(100, 255, 4s) are handled differently than simple identifiers
   # They should generate animation.smooth(100, 255, 4000) calls
-  assert(string.find(function_call_code, "animation.global('test_anim_').opacity = 128") >= 0, "Should set opacity property correctly")
+  assert(string.find(function_call_code, "test_anim_.opacity = 128") >= 0, "Should set opacity property correctly")
   
   print("✓ Easing keywords test passed")
   return true
@@ -754,6 +884,7 @@ def run_dsl_transpiler_tests()
     test_sequences,
     test_multiple_run_statements,
     test_variable_assignments,
+    test_computed_values,
     test_error_handling,
     test_forward_references,
     test_complex_dsl,

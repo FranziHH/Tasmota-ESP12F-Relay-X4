@@ -10,10 +10,10 @@ The Animation DSL is a declarative language for defining LED strip animations. I
 
 Comments use the `#` character and extend to the end of the line:
 
-```dsl
+```berry
 # This is a full-line comment
 # strip length 30  # This is an inline comment (TEMPORARILY DISABLED)
-color red = #FF0000  # This is an inline comment
+color bordeaux = 0x6F2C4F  # This is an inline comment
 ```
 
 Comments are preserved in the generated code and can appear anywhere in the DSL.
@@ -22,23 +22,23 @@ Comments are preserved in the generated code and can appear anywhere in the DSL.
 
 A DSL program consists of statements that can appear in any order:
 
-```dsl
+```berry
 # Strip configuration is handled automatically
 # strip length 60  # TEMPORARILY DISABLED
 
 # Color definitions
-color red = #FF0000
-color blue = #0000FF
+color bordeaux = 0x6F2C4F
+color majorelle = 0x6050DC
 
 # Animation definitions
-animation pulse_red = pulsating_animation(color=red, period=2s)
+animation pulse_bordeaux = pulsating_animation(color=bordeaux, period=2s)
 
 # Property assignments
 pulse_red.priority = 10
 
 # Sequences
 sequence demo {
-  play pulse_red for 5s
+  play pulse_bordeaux for 5s
   wait 1s
 }
 
@@ -114,7 +114,7 @@ The following color names are predefined and cannot be redefined:
 
 ### Numbers
 
-```dsl
+```berry
 42          # Integer
 3.14        # Floating point
 -5          # Negative number
@@ -124,7 +124,7 @@ The following color names are predefined and cannot be redefined:
 
 Time values require a unit suffix and are automatically converted to milliseconds:
 
-```dsl
+```berry
 500ms       # Milliseconds (stays 500)
 2s          # Seconds (converted to 2000ms)
 1m          # Minutes (converted to 60000ms)
@@ -135,7 +135,7 @@ Time values require a unit suffix and are automatically converted to millisecond
 
 Percentages use the `%` suffix and are automatically converted to 0-255 range with possible over-shooting:
 
-```dsl
+```berry
 0%          # 0 percent (converted to 0)
 50%         # 50 percent (converted to 128)
 100%        # 100 percent (converted to 255)
@@ -146,14 +146,14 @@ Percentages use the `%` suffix and are automatically converted to 0-255 range wi
 
 #### Hexadecimal Colors
 
-```dsl
+```berry
 0xFF0000    # Red (RGB format)
 0x80FF0000  # Semi-transparent red (ARGB format)
 ```
 
 #### Named Colors
 
-```dsl
+```berry
 red         # Predefined color name
 blue        # Predefined color name
 transparent # Transparent color
@@ -161,7 +161,7 @@ transparent # Transparent color
 
 ### Strings
 
-```dsl
+```berry
 "hello"     # Double-quoted string
 'world'     # Single-quoted string
 ```
@@ -170,7 +170,7 @@ transparent # Transparent color
 
 Identifiers must start with a letter or underscore, followed by letters, digits, or underscores:
 
-```dsl
+```berry
 my_color        # Valid identifier
 _private_var    # Valid identifier
 Color123        # Valid identifier
@@ -184,7 +184,7 @@ Color123        # Valid identifier
 
 ~~The `strip` statement configures the LED strip and must be the first statement if present:~~
 
-```dsl
+```berry
 # strip length 60     # TEMPORARILY DISABLED
 ```
 
@@ -194,7 +194,7 @@ Color123        # Valid identifier
 
 The `set` keyword assigns static values or value providers to global variables:
 
-```dsl
+```berry
 set brightness = 200        # Static integer value
 set cycle_time = 5s         # Static time value (converted to 5000ms)
 set opacity_level = 80%     # Static percentage (converted to 204)
@@ -202,35 +202,38 @@ set opacity_level = 80%     # Static percentage (converted to 204)
 # Value providers for dynamic values
 set brightness_osc = smooth(min_value=50, max_value=255, period=3s)
 set position_sweep = triangle(min_value=0, max_value=29, period=5s)
+
+# Computed values using strip length
+set strip_len = strip_length()  # Get current strip length
 ```
 
 ## Color Definitions
 
 The `color` keyword defines static colors or color providers:
 
-```dsl
+```berry
 # Static colors
-color red = 0xFF0000                # Static hex color
-color blue = 0x0000FF               # Static hex color
+color bordeaux = 0x6F2C4F           # Static hex color
+color majorelle = 0x6050DC          # Static hex color
 color semi_red = 0x80FF0000         # Static color with alpha channel
 color my_white = white              # Reference to predefined color
 
 # Color providers for dynamic colors
 color rainbow_cycle = color_cycle(
-  palette=[red, green, blue], 
+  palette=[red, green, blue]
   cycle_period=5s
 )
 color breathing_red = breathe_color(
-  base_color=red,
-  min_brightness=20,
-  max_brightness=255,
-  duration=3s,
+  base_color=red
+  min_brightness=5%
+  max_brightness=100%
+  duration=3s
   curve_factor=2
 )
 color pulsing_blue = pulsating_color(
-  base_color=blue,
-  min_brightness=50,
-  max_brightness=200,
+  base_color=blue
+  min_brightness=20%
+  max_brightness=80%
   duration=1s
 )
 ```
@@ -243,11 +246,11 @@ Palettes define color gradients using position-color pairs and support two encod
 
 Standard palettes use value positions from 0-255:
 
-```dsl
+```berry
 # Traditional syntax with commas
 palette fire_colors = [
-  (0, 0x000000),     # Position 0: Black
-  (128, 0xFF0000),   # Position 128: Red
+  (0, 0x000000)      # Position 0: Black
+  (128, 0xFF0000)    # Position 128: Red
   (255, 0xFFFF00)    # Position 255: Yellow
 ]
 
@@ -271,10 +274,10 @@ palette matrix_greens = [
 
 Palettes can also use tick counts for timing-based transitions:
 
-```dsl
+```berry
 palette timed_colors = [
-  (10, 0xFF0000),    # Red for 10 ticks
-  (20, 0x00FF00),    # Green for 20 ticks  
+  (10, 0xFF0000)     # Red for 10 ticks
+  (20, 0x00FF00)     # Green for 20 ticks  
   (15, 0x0000FF)     # Blue for 15 ticks
 ]
 ```
@@ -291,18 +294,18 @@ palette timed_colors = [
 
 The `animation` keyword defines instances of animation classes (subclasses of Animation):
 
-```dsl
+```berry
 animation red_solid = solid(color=red)
 
 animation pulse_effect = pulsating_animation(
-  color=blue,
+  color=blue
   period=2s
 )
 
 animation comet_trail = comet_animation(
-  color=white,
-  tail_length=10,
-  speed=1500,
+  color=white
+  tail_length=10
+  speed=1500
   direction=1
 )
 ```
@@ -316,7 +319,7 @@ animation comet_trail = comet_animation(
 
 Animation properties can be modified after creation:
 
-```dsl
+```berry
 animation pulse_red = pulsating_animation(color=red, period=2s)
 
 # Set properties
@@ -327,6 +330,11 @@ pulse_red.position = 15
 # Dynamic properties using value providers
 pulse_red.position = triangle(min_value=0, max_value=29, period=5s)
 pulse_red.opacity = smooth(min_value=100, max_value=255, period=2s)
+
+# Computed properties using arithmetic expressions
+set strip_len = strip_length()
+pulse_red.position = strip_len / 2      # Center position
+pulse_red.opacity = strip_len * 4       # Scale with strip size
 ```
 
 **Common Properties:**
@@ -336,11 +344,156 @@ pulse_red.opacity = smooth(min_value=100, max_value=255, period=2s)
 - `speed` - Speed multiplier
 - `phase` - Phase offset
 
+## Computed Values
+
+The DSL supports computed values using arithmetic expressions with value providers and mathematical functions:
+
+```berry
+# Get strip dimensions
+set strip_len = strip_length()
+
+# Use computed values in animation parameters
+animation stream1 = comet_animation(
+  color=red
+  tail_length=strip_len / 4    # Computed: quarter of strip length
+  speed=1.5
+  priority=10
+)
+
+# Complex expressions with multiple operations
+set base_speed = 2.0
+animation stream2 = comet_animation(
+  color=blue
+  tail_length=strip_len / 8 + 2    # Computed: eighth of strip + 2
+  speed=base_speed * 1.5           # Computed: base speed × 1.5
+)
+
+# Computed values in property assignments
+stream1.position = strip_len / 2     # Center of strip
+stream2.opacity = strip_len * 4      # Scale opacity with strip size
+
+# Using mathematical functions in computed values
+animation pulse = pulsating_animation(
+  color=red
+  period=2s
+)
+pulse.opacity = abs(sine(strip_len) * 128 + 127)    # Sine wave opacity
+pulse.position = max(0, min(strip_len - 1, round(strip_len / 2)))  # Clamped center position
+```
+
+**Supported Operations:**
+- Addition: `+`
+- Subtraction: `-`
+- Multiplication: `*`
+- Division: `/`
+- Parentheses for grouping: `(expression)`
+
+**Mathematical Functions:**
+The following mathematical functions are available in computed parameters and are automatically detected by the transpiler:
+
+| Function | Description | Parameters | Return Value |
+|----------|-------------|------------|--------------|
+| `min(a, b, ...)` | Returns the minimum value | Two or more numbers | Minimum value |
+| `max(a, b, ...)` | Returns the maximum value | Two or more numbers | Maximum value |
+| `abs(x)` | Returns the absolute value | One number | Absolute value |
+| `round(x)` | Rounds to nearest integer | One number | Rounded integer |
+| `sqrt(x)` | Returns the square root | One number | Square root (scaled for integers) |
+| `scale(v, from_min, from_max, to_min, to_max)` | Scales value from one range to another | Value and range parameters | Scaled integer |
+| `sine(angle)` | Returns sine of angle | Angle in 0-255 range (0-360°) | Sine value in -255 to 255 range |
+| `cosine(angle)` | Returns cosine of angle | Angle in 0-255 range (0-360°) | Cosine value in -255 to 255 range |
+
+**Mathematical Function Examples:**
+```berry
+# Basic math functions
+set strip_len = strip_length()
+animation test = pulsating_animation(color=red, period=2s)
+
+# Absolute value for ensuring positive results
+test.opacity = abs(strip_len - 200)
+
+# Min/max for clamping values
+test.position = max(0, min(strip_len - 1, 15))  # Clamp position to valid range
+
+# Rounding for integer positions
+test.position = round(strip_len / 2.5)
+
+# Square root for non-linear scaling
+test.brightness = sqrt(strip_len * 4)  # Non-linear brightness based on strip size
+
+# Scaling values between ranges
+test.opacity = scale(strip_len, 10, 60, 50, 255)  # Scale strip length to opacity range
+
+# Trigonometric functions for wave patterns
+set angle = 128  # 180 degrees in 0-255 range
+test.opacity = sine(angle) + 128      # Sine wave shifted to positive range
+test.brightness = cosine(angle) + 128  # Cosine wave shifted to positive range
+
+# Complex expressions combining multiple functions
+test.position = max(0, round(abs(sine(strip_len * 2)) * (strip_len - 1) / 255))
+test.opacity = min(255, max(50, scale(sqrt(strip_len), 0, 16, 100, 255)))
+```
+
+**Special Notes:**
+- **Integer Optimization**: `sqrt()` function automatically handles integer scaling for 0-255 range values
+- **Trigonometric Range**: `sine()` and `cosine()` use 0-255 input range (mapped to 0-360°) and return -255 to 255 output range
+- **Automatic Detection**: Mathematical functions are automatically detected at transpile time using dynamic introspection
+- **Closure Context**: In computed parameters, mathematical functions are called as `self.<function>()` in the generated closure context
+
+**How It Works:**
+When the DSL detects arithmetic expressions containing value providers, variable references, or mathematical functions, it automatically creates closure functions that capture the computation. These closures are called with `(self, param_name, time_ms)` parameters, allowing the computation to be re-evaluated dynamically as needed. Mathematical functions are automatically prefixed with `self.` in the closure context to access the ClosureValueProvider's mathematical methods.
+
+**User Functions in Computed Parameters:**
+User-defined functions can also be used in computed parameter expressions, providing powerful custom effects:
+
+```berry
+# Simple user function in computed parameter
+animation base = solid(color=blue)
+base.opacity = rand_demo()
+
+# User functions mixed with math operations
+animation dynamic = solid(
+  color=purple
+  opacity=max(50, min(255, rand_demo() + 100))
+)
+```
+
+### User Functions
+
+User functions are custom Berry functions that can be called from computed parameters. They provide dynamic values that change over time.
+
+**Available User Functions:**
+- `rand_demo()` - Returns random values for demonstration purposes
+
+**Usage in Computed Parameters:**
+```berry
+# Simple user function
+animation.opacity = rand_demo()
+
+# User function with math operations
+animation.opacity = max(100, rand_demo())
+
+# User function in arithmetic expressions
+animation.opacity = abs(rand_demo() - 128) + 64
+```
+
+**Available User Functions:**
+The following user functions are available by default (see [User Functions Guide](USER_FUNCTIONS.md) for details):
+
+| Function | Parameters | Description |
+|----------|------------|-------------|
+| `rand_demo()` | none | Returns a random value (0-255) for demonstration |
+
+**User Function Behavior:**
+- User functions are automatically detected by the transpiler
+- They receive `self.engine` as the first parameter in closure context
+- They can be mixed with mathematical functions and arithmetic operations
+- The entire expression is wrapped in a single efficient closure
+
 ## Sequences
 
 Sequences orchestrate multiple animations with timing control:
 
-```dsl
+```berry
 sequence demo {
   play red_animation for 3s
   wait 1s
@@ -358,21 +511,21 @@ sequence demo {
 
 #### Play Statement
 
-```dsl
+```berry
 play animation_name                 # Play indefinitely
 play animation_name for 5s          # Play for specific duration
 ```
 
 #### Wait Statement
 
-```dsl
+```berry
 wait 1s                            # Wait for 1 second
 wait 500ms                         # Wait for 500 milliseconds
 ```
 
 #### Repeat Statement
 
-```dsl
+```berry
 repeat 5 times:
   play effect for 1s
   wait 500ms
@@ -390,7 +543,7 @@ repeat 3 times:
 
 Execute animations or sequences:
 
-```dsl
+```berry
 run animation_name      # Run an animation
 run sequence_name       # Run a sequence
 ```
@@ -399,7 +552,7 @@ run sequence_name       # Run a sequence
 
 ### Arithmetic Operators
 
-```dsl
+```berry
 +       # Addition
 -       # Subtraction (also unary minus)
 *       # Multiplication
@@ -409,7 +562,7 @@ run sequence_name       # Run a sequence
 
 ### Comparison Operators
 
-```dsl
+```berry
 ==      # Equal to
 !=      # Not equal to
 <       # Less than
@@ -420,7 +573,7 @@ run sequence_name       # Run a sequence
 
 ### Logical Operators
 
-```dsl
+```berry
 &&      # Logical AND
 ||      # Logical OR
 !       # Logical NOT
@@ -428,7 +581,7 @@ run sequence_name       # Run a sequence
 
 ### Assignment Operators
 
-```dsl
+```berry
 =       # Simple assignment
 ```
 
@@ -436,7 +589,7 @@ run sequence_name       # Run a sequence
 
 Functions use named parameter syntax with flexible formatting:
 
-```dsl
+```berry
 # Single line (commas required)
 function_name(param1=value1, param2=value2)
 
@@ -455,7 +608,7 @@ function_name(
 ```
 
 **Examples:**
-```dsl
+```berry
 # Traditional single-line syntax
 solid(color=red)
 pulsating_animation(color=blue, period=2s)
@@ -476,7 +629,7 @@ comet_animation(
 ```
 
 **Nested Function Calls:**
-```dsl
+```berry
 pulsating_animation(
   color=solid(color=red)
   period=smooth(
@@ -485,6 +638,21 @@ pulsating_animation(
     period=10s
   )
 )
+```
+
+**Mathematical Functions in Computed Parameters:**
+Mathematical functions can be used in computed parameter expressions and are automatically detected by the transpiler:
+
+```berry
+animation wave = pulsating_animation(
+  color=blue
+  period=2s
+)
+
+# Mathematical functions in property assignments
+wave.opacity = abs(sine(strip_length()) - 128)           # Sine wave opacity
+wave.position = max(0, min(strip_length() - 1, 15))      # Clamped position
+wave.brightness = round(sqrt(strip_length()) * 4)        # Non-linear scaling
 ```
 
 ## Supported Classes
@@ -514,7 +682,7 @@ Value providers create dynamic values that change over time:
 | `elastic` | Elastic easing with spring-like overshoot |
 | `bounce` | Bounce easing like a ball with decreasing amplitude |
 
-```dsl
+```berry
 # Direct oscillator usage
 triangle(min_value=0, max_value=255, period=2s)    # Triangle wave
 smooth(min_value=50, max_value=200, period=3s)     # Smooth cosine
@@ -598,7 +766,7 @@ The DSL validates class and parameter existence during compilation, catching err
 
 ### Common Errors
 
-```dsl
+```berry
 # Invalid: Redefining predefined color
 color red = 0x800000                # Error: Cannot redefine 'red'
 
@@ -718,12 +886,12 @@ newline = "\n" | "\r\n" ;
 The DSL supports flexible parameter syntax that makes multi-line function calls more readable:
 
 ### Traditional Syntax (Commas Required)
-```dsl
+```berry
 animation stream = comet_animation(color=red, tail_length=15, speed=1.5s, priority=10)
 ```
 
 ### New Multi-Line Syntax (Commas Optional)
-```dsl
+```berry
 animation stream = comet_animation(
   color=red
   tail_length=15
@@ -733,7 +901,7 @@ animation stream = comet_animation(
 ```
 
 ### Mixed Syntax (Both Supported)
-```dsl
+```berry
 animation stream = comet_animation(
   color=red, tail_length=15
   speed=1.5s
@@ -768,7 +936,10 @@ This applies to:
 - Parameter validation at compile time
 - Execution statements
 - User-defined functions (with engine-first parameter pattern) - see **[User Functions Guide](USER_FUNCTIONS.md)**
+- **User functions in computed parameters**: User functions can be used in arithmetic expressions alongside mathematical functions
 - **Flexible parameter syntax**: Commas optional when parameters are on separate lines
+- **Computed values**: Arithmetic expressions with value providers automatically create closures
+- **Mathematical functions**: `min`, `max`, `abs`, `round`, `sqrt`, `scale`, `sine`, `cosine` in computed parameters
 
 ### 🚧 Partially Implemented
 - Expression evaluation (basic support)
@@ -778,7 +949,6 @@ This applies to:
 ### ❌ Planned Features
 - Advanced control flow (if/else, choose random)
 - Event system and handlers
-- Mathematical expressions
 - Variable references with $ syntax
 - Spatial operations and zones
 - 2D matrix support

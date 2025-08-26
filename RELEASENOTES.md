@@ -119,11 +119,13 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 - Commands `LoRaWanDecoder "` and `LoRaWanName "` to clear name [#23394](https://github.com/arendst/Tasmota/issues/23394)
 - Command `I2sPause` [#23646](https://github.com/arendst/Tasmota/issues/23646)
 - Support for RV3028 RTC [#23672](https://github.com/arendst/Tasmota/issues/23672)
+- Extend state JSON message with functional hostname and ipaddress which could be WiFi or Ethernet
 - Internal function 'WSContentSendRaw_P' [#23641](https://github.com/arendst/Tasmota/issues/23641)
 - Universal display driver for ZJY169S0800TG01 ST7789 280x240 [#23638](https://github.com/arendst/Tasmota/issues/23638)
 - NeoPool add Redox tank alarm [#19811](https://github.com/arendst/Tasmota/issues/19811)
 - I2S additions [#23543](https://github.com/arendst/Tasmota/issues/23543)
-- Basic support for ESP32-P4 [#23663](https://github.com/arendst/Tasmota/issues/23663)
+- ESP32 ROM SHA Hardware Acceleration to BearSSL [#23819](https://github.com/arendst/Tasmota/issues/23819)
+- Support for ESP32-P4 [#23663](https://github.com/arendst/Tasmota/issues/23663)
 - Support for ESP32-C5 [#23804](https://github.com/arendst/Tasmota/issues/23804)
 - ESP32-P4 command `HostedOta` [#23675](https://github.com/arendst/Tasmota/issues/23675)
 - Berry f-strings now support ':' in expression [#23618](https://github.com/arendst/Tasmota/issues/23618)
@@ -153,6 +155,7 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 - Berry security issues in `int64` and improve documentation [#23605](https://github.com/arendst/Tasmota/issues/23605)
 - Berry security issues in `berry_mapping` and improve documentation [#23606](https://github.com/arendst/Tasmota/issues/23606)
 - Berry Hue regression from #23429 [#23623](https://github.com/arendst/Tasmota/issues/23623)
+- Berry calling `setmember` with a function [#23825](https://github.com/arendst/Tasmota/issues/23825)
 - LVGL restore `lv_chart.set_range` removed in LVGL 9.3.0 in favor of `lv_chart.set_axis_range` [#23567](https://github.com/arendst/Tasmota/issues/23567)
 
 ### Removed
