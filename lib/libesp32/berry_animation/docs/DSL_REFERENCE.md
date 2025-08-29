@@ -220,7 +220,7 @@ color my_white = white              # Reference to predefined color
 
 # Color providers for dynamic colors
 color rainbow_cycle = color_cycle(
-  palette=[red, green, blue]
+  palette=bytes("FFFF0000" "FF00FF00" "FF0000FF")
   cycle_period=5s
 )
 color breathing_red = breathe_color(
@@ -399,8 +399,8 @@ The following mathematical functions are available in computed parameters and ar
 | `round(x)` | Rounds to nearest integer | One number | Rounded integer |
 | `sqrt(x)` | Returns the square root | One number | Square root (scaled for integers) |
 | `scale(v, from_min, from_max, to_min, to_max)` | Scales value from one range to another | Value and range parameters | Scaled integer |
-| `sine(angle)` | Returns sine of angle | Angle in 0-255 range (0-360°) | Sine value in -255 to 255 range |
-| `cosine(angle)` | Returns cosine of angle | Angle in 0-255 range (0-360°) | Cosine value in -255 to 255 range |
+| `sin(angle)` | Returns sine of angle | Angle in 0-255 range (0-360°) | Sine value in -255 to 255 range |
+| `cos(angle)` | Returns cosine of angle | Angle in 0-255 range (0-360°) | Cosine value in -255 to 255 range |
 
 **Mathematical Function Examples:**
 ```berry
@@ -425,17 +425,17 @@ test.opacity = scale(strip_len, 10, 60, 50, 255)  # Scale strip length to opacit
 
 # Trigonometric functions for wave patterns
 set angle = 128  # 180 degrees in 0-255 range
-test.opacity = sine(angle) + 128      # Sine wave shifted to positive range
-test.brightness = cosine(angle) + 128  # Cosine wave shifted to positive range
+test.opacity = sin(angle) + 128      # Mathematical sine function (not oscillator)
+test.brightness = cos(angle) + 128  # Mathematical cosine function (not oscillator)
 
 # Complex expressions combining multiple functions
-test.position = max(0, round(abs(sine(strip_len * 2)) * (strip_len - 1) / 255))
+test.position = max(0, round(abs(sin(strip_len * 2)) * (strip_len - 1) / 255))
 test.opacity = min(255, max(50, scale(sqrt(strip_len), 0, 16, 100, 255)))
 ```
 
 **Special Notes:**
 - **Integer Optimization**: `sqrt()` function automatically handles integer scaling for 0-255 range values
-- **Trigonometric Range**: `sine()` and `cosine()` use 0-255 input range (mapped to 0-360°) and return -255 to 255 output range
+- **Trigonometric Range**: `sin()` and `cos()` use 0-255 input range (mapped to 0-360°) and return -255 to 255 output range
 - **Automatic Detection**: Mathematical functions are automatically detected at transpile time using dynamic introspection
 - **Closure Context**: In computed parameters, mathematical functions are called as `self.<function>()` in the generated closure context
 
@@ -491,7 +491,9 @@ The following user functions are available by default (see [User Functions Guide
 
 ## Sequences
 
-Sequences orchestrate multiple animations with timing control:
+Sequences orchestrate multiple animations with timing control. The DSL supports two syntaxes for sequences with repeat functionality:
+
+### Basic Sequence Syntax
 
 ```berry
 sequence demo {
@@ -499,13 +501,42 @@ sequence demo {
   wait 1s
   play blue_animation for 2s
   
-  repeat 3 times:
+  repeat 3 times {
     play flash_effect for 200ms
     wait 300ms
+  }
   
   play final_animation
 }
 ```
+
+### Repeat Sequence Syntax
+
+For sequences that are primarily repeating patterns, you can use the alternative syntax:
+
+```berry
+# Option 1: Traditional syntax with repeat sub-sequence
+sequence cylon_eye {
+  repeat forever {
+    play red_eye for 3s
+    red_eye.pos = triangle_val
+    play red_eye for 3s
+    red_eye.pos = cosine_val
+    eye_color.next = 1
+  }
+}
+
+# Option 2: Alternative syntax - sequence with repeat modifier
+sequence cylon_eye repeat forever {
+  play red_eye for 3s
+  red_eye.pos = triangle_val
+  play red_eye for 3s
+  red_eye.pos = cosine_val
+  eye_color.next = 1
+}
+```
+
+**Note**: Both syntaxes are functionally equivalent. The second syntax creates an outer sequence (runs once) containing an inner repeat sub-sequence.
 
 ### Sequence Statements
 
@@ -514,6 +545,7 @@ sequence demo {
 ```berry
 play animation_name                 # Play indefinitely
 play animation_name for 5s          # Play for specific duration
+play animation_name for duration_var # Play for variable duration
 ```
 
 #### Wait Statement
@@ -521,22 +553,119 @@ play animation_name for 5s          # Play for specific duration
 ```berry
 wait 1s                            # Wait for 1 second
 wait 500ms                         # Wait for 500 milliseconds
+wait duration_var                  # Wait for variable duration
+```
+
+#### Duration Support
+
+Both `play` and `wait` statements support flexible duration specifications:
+
+**Literal Time Values:**
+```berry
+play animation for 5s              # 5 seconds
+play animation for 2000ms          # 2000 milliseconds
+play animation for 1m              # 1 minute
+```
+
+**Variable References:**
+```berry
+set short_time = 2s
+set long_time = 10s
+
+sequence demo {
+  play animation for short_time     # Use variable duration
+  wait long_time                    # Variables work in wait too
+}
+```
+
+**Value Providers (Dynamic Duration):**
+```berry
+set dynamic_duration = triangle(min_value=1000, max_value=5000, period=10s)
+
+sequence demo {
+  play animation for dynamic_duration  # Duration changes over time
+}
+```
+
+**Examples:**
+```berry
+# Cylon eye with variable duration
+set eye_duration = 5s
+
+sequence cylon_eye forever {
+  play red_eye for eye_duration     # Use variable for consistent timing
+  red_eye.pos = triangle_val
+  play red_eye for eye_duration     # Same duration for both phases
+  red_eye.pos = cosine_val
+  eye_color.next = 1
+}
 ```
 
 #### Repeat Statement
 
-```berry
-repeat 5 times:
-  play effect for 1s
-  wait 500ms
+Repeat statements create runtime sub-sequences that execute repeatedly:
 
-# Nested repeats are supported
-repeat 3 times:
-  play intro for 2s
-  repeat 2 times:
-    play flash for 100ms
-    wait 200ms
-  play outro for 1s
+```berry
+repeat 3 times {                   # Repeat exactly 3 times
+  play animation for 1s
+  wait 500ms
+}
+
+repeat forever {                   # Repeat indefinitely until parent sequence stops
+  play animation for 1s
+  wait 500ms
+}
+```
+
+**Repeat Behavior:**
+- **Runtime Execution**: Repeats are executed at runtime, not expanded at compile time
+- **Sub-sequences**: Each repeat block creates a sub-sequence that manages its own iteration state
+- **Nested Repeats**: Supports nested repeats with multiplication (e.g., `repeat 3 times { repeat 2 times { ... } }` executes 6 times total)
+- **Forever Loops**: `repeat forever` continues until the parent sequence is stopped
+- **Efficient**: No memory overhead for large repeat counts
+
+#### Assignment Statement
+
+Property assignments can be performed within sequences to dynamically modify animation parameters during playback:
+
+```berry
+sequence demo {
+  play red_eye for 3s
+  red_eye.pos = triangle_val        # Change position to triangle oscillator
+  play red_eye for 3s
+  red_eye.pos = cosine_val          # Change position to cosine oscillator
+  eye_color.next = 1                # Advance color cycle to next color
+}
+```
+
+**Assignment Semantics:**
+- Assignments in sequences have exactly the same semantics as assignments outside sequences
+- They can assign static values, value providers, or computed expressions
+- Assignments are executed instantly when the sequence step is reached
+- The assignment is wrapped in a closure: `def (engine) <assign_code> end`
+
+**Examples:**
+```berry
+sequence dynamic_show {
+  play pulse_anim for 2s
+  pulse_anim.opacity = 128          # Set static opacity
+  play pulse_anim for 2s
+  pulse_anim.opacity = brightness   # Use value provider
+  play pulse_anim for 2s
+  pulse_anim.color = next_color     # Change color provider
+  play pulse_anim for 2s
+}
+
+# Assignments work in repeat blocks too
+sequence cylon_eye {
+  repeat 3 times {
+    play red_eye for 1s
+    red_eye.pos = triangle_val      # Change oscillator pattern
+    play red_eye for 1s
+    red_eye.pos = cosine_val        # Change back
+    eye_color.next = 1              # Advance color
+  }
+}
 ```
 
 ## Execution Statements
@@ -672,7 +801,8 @@ Value providers create dynamic values that change over time:
 |----------|-------------|
 | `triangle` | Triangle wave oscillation (alias for oscillator with triangle waveform) |
 | `smooth` | Smooth cosine wave (alias for oscillator with smooth waveform) |
-| `sine` | Pure sine wave oscillation (alias for oscillator with sine waveform) |
+| `cosine_osc` | Cosine wave oscillation (alias for smooth - cosine waveform) |
+| `sine_osc` | Pure sine wave oscillation (alias for oscillator with sine waveform) |
 | `linear` | Linear progression (alias for oscillator with linear waveform) |
 | `ramp` | Sawtooth wave (alias for oscillator with ramp waveform) |
 | `sawtooth` | Sawtooth wave (alias for ramp) |
@@ -686,7 +816,8 @@ Value providers create dynamic values that change over time:
 # Direct oscillator usage
 triangle(min_value=0, max_value=255, period=2s)    # Triangle wave
 smooth(min_value=50, max_value=200, period=3s)     # Smooth cosine
-sine(min_value=0, max_value=255, period=2s)        # Pure sine wave
+cosine_osc(min_value=3, max_value=1, period=5s)    # Cosine wave (alias for smooth)
+sine_osc(min_value=0, max_value=255, period=2s)    # Pure sine wave
 linear(min_value=0, max_value=100, period=1s)      # Linear progression
 ramp(min_value=0, max_value=255, period=2s)        # Sawtooth wave
 square(min_value=0, max_value=255, period=1s)      # Square wave
@@ -699,6 +830,8 @@ bounce(min_value=0, max_value=255, period=2s)      # Bouncing ball effect
 set brightness_oscillator = smooth(min_value=50, max_value=255, period=3s)
 set position_sweep = triangle(min_value=0, max_value=29, period=5s)
 set elastic_movement = elastic(min_value=0, max_value=30, period=4s)
+set sine_wave = sine_osc(min_value=0, max_value=255, period=2s)
+set cosine_wave = cosine_osc(min_value=50, max_value=200, period=3s)
 set strip_len = strip_length()  # Get the current strip length
 ```
 
@@ -763,6 +896,8 @@ The DSL validates class and parameter existence during compilation, catching err
 - **Parameter Names**: Checks that all named parameters are valid for the specific class
 - **Parameter Constraints**: Validates parameter values against defined constraints (min/max, enums, types)
 - **Nested Validation**: Validates parameters in nested function calls and value providers
+- **Property Assignment Validation**: Validates parameter names in property assignments (e.g., `animation.invalid_param = value`) against the actual class parameters
+- **Object Reference Validation**: Validates that referenced objects exist in `run` statements and sequence `play` statements
 
 ### Common Errors
 
@@ -770,15 +905,28 @@ The DSL validates class and parameter existence during compilation, catching err
 # Invalid: Redefining predefined color
 color red = 0x800000                # Error: Cannot redefine 'red'
 
-# Invalid: Unknown parameter
+# Invalid: Unknown parameter in constructor
 animation bad = pulsating_animation(invalid_param=123)  # Error: Unknown parameter
 
-# Invalid: Undefined reference
+# Invalid: Unknown parameter in property assignment
+animation pulse = pulsating_animation(color=red, period=2s)
+pulse.wrong_arg = 15                # Error: Parameter 'wrong_arg' not valid for PulseAnimation
+
+# Invalid: Undefined reference in color definition
 animation ref = solid(color=undefined_color)        # Error: Undefined reference
+
+# Invalid: Undefined reference in run statement
+run undefined_animation             # Error: Undefined reference 'undefined_animation' in run
+
+# Invalid: Undefined reference in sequence
+sequence demo {
+  play undefined_animation for 5s   # Error: Undefined reference 'undefined_animation' in sequence play
+}
 
 # Valid alternatives
 color my_red = 0x800000             # OK: Different name
 animation good = pulsating_animation(color=red, period=2s)  # OK: Valid parameters
+good.priority = 10                  # OK: Valid parameter assignment
 ```
 
 ## Formal Grammar (EBNF)
@@ -809,13 +957,14 @@ animation_def = "animation" identifier "=" animation_expression ;
 property_assignment = identifier "." identifier "=" expression ;
 
 (* Sequences *)
-sequence = "sequence" identifier "{" sequence_body "}" ;
+sequence = "sequence" identifier [ "repeat" ( number "times" | "forever" ) ] "{" sequence_body "}" ;
 sequence_body = { sequence_statement } ;
-sequence_statement = play_stmt | wait_stmt | repeat_stmt ;
+sequence_statement = play_stmt | wait_stmt | repeat_stmt | sequence_assignment ;
 
 play_stmt = "play" identifier [ "for" time_expression ] ;
 wait_stmt = "wait" time_expression ;
-repeat_stmt = "repeat" number "times" ":" sequence_body ;
+repeat_stmt = "repeat" ( number "times" | "forever" ) "{" sequence_body "}" ;
+sequence_assignment = identifier "." identifier "=" expression ;
 
 (* Execution *)
 execution_stmt = "run" identifier ;

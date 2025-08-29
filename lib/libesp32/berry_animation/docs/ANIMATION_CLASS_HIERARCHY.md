@@ -26,7 +26,7 @@ ParameterizedObject
 │   ├── NoiseAnimation
 │   ├── PlasmaAnimation
 │   ├── PulseAnimation
-│   ├── PulsePositionAnimation
+│   ├── BeaconAnimation
 │   ├── CrenelPositionAnimation
 │   ├── RichPaletteAnimation
 │   ├── TwinkleAnimation
@@ -141,7 +141,7 @@ Generates oscillating values using various waveforms. Inherits from `ValueProvid
 - `8` (ELASTIC) - Spring-like overshoot and oscillation
 - `9` (BOUNCE) - Ball-like bouncing with decreasing amplitude
 
-**Factories**: `animation.ramp(engine)`, `animation.sawtooth(engine)`, `animation.linear(engine)`, `animation.triangle(engine)`, `animation.smooth(engine)`, `animation.sine(engine)`, `animation.square(engine)`, `animation.ease_in(engine)`, `animation.ease_out(engine)`, `animation.elastic(engine)`, `animation.bounce(engine)`, `animation.oscillator_value(engine)`
+**Factories**: `animation.ramp(engine)`, `animation.sawtooth(engine)`, `animation.linear(engine)`, `animation.triangle(engine)`, `animation.smooth(engine)`, `animation.sine_osc(engine)`, `animation.cosine_osc(engine)`, `animation.square(engine)`, `animation.ease_in(engine)`, `animation.ease_out(engine)`, `animation.elastic(engine)`, `animation.bounce(engine)`, `animation.oscillator_value(engine)`
 
 **See Also**: [Oscillation Patterns](OSCILLATION_PATTERNS.md) - Visual examples and usage patterns for oscillation waveforms
 
@@ -169,13 +169,13 @@ The ClosureValueProvider includes built-in mathematical helper methods that can 
 | `round(x)` | Round to nearest integer | `x: number` | `int` | `self.round(3.7)` → `4` |
 | `sqrt(x)` | Square root with integer handling | `x: number` | `number` | `self.sqrt(64)` → `128` (for 0-255 range) |
 | `scale(v, from_min, from_max, to_min, to_max)` | Scale value between ranges | `v, from_min, from_max, to_min, to_max: number` | `int` | `self.scale(50, 0, 100, 0, 255)` → `127` |
-| `sine(angle)` | Sine function (0-255 input range) | `angle: number` | `int` | `self.sine(64)` → `255` (90°) |
-| `cosine(angle)` | Cosine function (0-255 input range) | `angle: number` | `int` | `self.cosine(0)` → `-255` (matches oscillator behavior) |
+| `sin(angle)` | Sine function (0-255 input range) | `angle: number` | `int` | `self.sin(64)` → `255` (90°) |
+| `cos(angle)` | Cosine function (0-255 input range) | `angle: number` | `int` | `self.cos(0)` → `-255` (matches oscillator behavior) |
 
 **Mathematical Method Notes:**
 
 - **Integer Handling**: `sqrt()` treats integers in 0-255 range as normalized values (255 = 1.0)
-- **Angle Range**: `sine()` and `cosine()` use 0-255 input range (0-360 degrees)
+- **Angle Range**: `sin()` and `cos()` use 0-255 input range (0-360 degrees)
 - **Output Range**: Trigonometric functions return -255 to 255 (mapped from -1.0 to 1.0)
 - **Cosine Behavior**: Matches oscillator COSINE waveform (starts at minimum, not maximum)
 - **Scale Function**: Uses `tasmota.scale_int()` for efficient integer scaling
@@ -241,41 +241,35 @@ color static_accent = solid(color=accent)
 
 ### ColorCycleColorProvider
 
-Cycles through a custom list of colors with smooth transitions. Inherits from `ColorProvider`.
+Cycles through a palette of colors with brutal switching. Inherits from `ColorProvider`.
 
 | Parameter | Type | Default | Constraints | Description |
 |-----------|------|---------|-------------|-------------|
-| `palette` | list | [0xFF0000FF, 0xFF00FF00, 0xFFFF0000] | - | List of colors to cycle through |
+| `palette` | bytes | default palette | - | Palette bytes in AARRGGBB format |
 | `cycle_period` | int | 5000 | min: 0 | Cycle time in ms (0 = manual only) |
-| `transition_type` | int | 1 | enum: [0,1] | 0=linear, 1=sine/smooth |
-| `next` | int | 0 | - | Write 1 to move to next color manually |
+| `next` | int | 0 | - | Write 1 to move to next color manually, or any number to go forward or backwars by `n` colors |
 
 **Modes**: Auto-cycle (`cycle_period > 0`) or Manual-only (`cycle_period = 0`)
 
 #### Usage Examples
 
 ```berry
-# RGB cycle with smooth transitions
+# RGB cycle with brutal switching
 color rgb_cycle = color_cycle(
-  palette=[red, green, blue],
-  cycle_period=4s,
-  transition_type=1
+  palette=bytes("FF0000FF" "FF00FF00" "FFFF0000"),
+  cycle_period=4s
 )
 
 # Custom warm colors
-color warm_red = 0xFF4500
-color warm_orange = 0xFF8C00
 color warm_cycle = color_cycle(
-  palette=[warm_red, warm_orange, yellow],
-  cycle_period=3s,
-  transition_type=1
+  palette=bytes("FF4500FF" "FF8C00FF" "FFFF00"),
+  cycle_period=3s
 )
 
-# Mixed predefined and custom colors
+# Mixed colors in AARRGGBB format
 color mixed_cycle = color_cycle(
-  palette=[0xFF0000, green, 0x0000FF],
-  cycle_period=2s,
-  transition_type=0
+  palette=bytes("FFFF0000" "FF00FF00" "FF0000FF"),
+  cycle_period=2s
 )
 ```
 
@@ -382,7 +376,7 @@ color deep_breath = breathe_color(
 )
 
 # Using dynamic base color
-color rainbow_cycle = color_cycle(palette=[red, green, blue], cycle_period=5s)
+color rainbow_cycle = color_cycle(palette=bytes("FF0000FF" "FF00FF00" "FFFF0000"), cycle_period=5s)
 color breathing_rainbow = breathe_color(
   base_color=rainbow_cycle,
   min_brightness=30,
@@ -787,7 +781,7 @@ Creates a pulsing effect oscillating between min and max brightness. Inherits fr
 
 **Factory**: `animation.pulsating_animation(engine)`
 
-### PulsePositionAnimation
+### BeaconAnimation
 
 Creates a pulse effect at a specific position with optional fade regions. Inherits from `Animation`.
 
@@ -812,7 +806,7 @@ Where:
 The pulse consists of:
 - **Core pulse**: Full brightness region of `beacon_size` pixels
 - **Fade regions**: Optional `slew_size` pixels on each side with gradual fade
-- **Total width**: `beacon_sizee + (2 * slew_size)` pixels
+- **Total width**: `beacon_size + (2 * slew_size)` pixels
 
 #### Parameters
 
@@ -840,7 +834,7 @@ The pulse consists of:
 animation sharp_pulse = beacon_animation(
   color=red,
   pos=10,
-  beacon_sizee=3,
+  beacon_size=3,
   slew_size=0
 )
 
