@@ -73,7 +73,7 @@ var rainbow_with_white_ = bytes(
   "FFFFFFFF"
 )
 shutter_bidir_template(engine, rainbow_with_white_, 1500)
-engine.start()
+engine.run()
 
 
 #- Original DSL source:
