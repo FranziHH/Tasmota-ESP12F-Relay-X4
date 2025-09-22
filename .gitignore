@@ -28,6 +28,7 @@ CMakeLists.txt
 data
 unpacked_fs
 unpacked_boards
+tasmota/user/*
 tasmota/user_config_*
 ## tasmota/user_config_override.h
 # allow explicit
