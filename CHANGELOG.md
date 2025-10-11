@@ -3,29 +3,38 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [15.0.1.5]
+## [15.1.0.1]
 ### Added
-
 
 ### Breaking Changed
 
 ### Changed
+
+### Fixed
+
+### Removed
+
+
+## [Released]
+
+## [15.1.0] 20251011
+- Release Stella
+
+## [15.0.1.5] 20251011
+### Changed
 - ESP8266 platform update from 2025.09.00 to 2025.10.00 (#23971)
 - ESP32 Platform from 2025.09.30 to 2025.10.30, Framework (Arduino Core) from v3.1.3.250808 to v3.1.4 and IDF from v5.3.3.250801 to v5.3.4.250826 (#23971)
-- Extension Manager show current version in UI
+- Extension Manager show current version in UI (#23995)
 
 ### Fixed
 - Berry fixed 'be_top is non zero' warning when calling C mapped functions (#23989)
 - Berry fixed 'be_top is non zero' when `Br` command fails (#23990)
-
-### Removed
-
+- TLS fix ECDSA and add `SetOption165 1` to enable ECDSA in addition to RSA
 
 ## [15.0.1.4] 20251002
 ### Added
 - ESP32 Extension Manager, replacing loading of Partition Wizard (#23955)
 - Berry animation framework web ui to compile DSL (#23962)
-- Berry Devices Online Extension App
 
 ### Changed
 - ESP32 Platform from 2025.08.30 to 2025.09.30, Framework (Arduino Core) from v3.1.3.250808 to v3.1.4 and IDF from v5.3.3.250801 to v5.3.4.250826 (#23888)
@@ -104,8 +113,6 @@ All notable changes to this project will be documented in this file.
 - Berry security issues in `berry_mapping` and improve documentation (#23606)
 - Berry Hue regression from #23429 (#23623)
 - AHT30 sensor start with null values after deep sleep (#23624)
-
-## [Released]
 
 ## [15.0.1] 20250614
 - Release Sharon
