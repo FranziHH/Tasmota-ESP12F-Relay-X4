@@ -5,14 +5,18 @@ All notable changes to this project will be documented in this file.
 
 ## [15.1.0.1]
 ### Added
+- TLS enabled ECDSA by default for ESP8266 (#24009)
 
 ### Breaking Changed
 
 ### Changed
+- Refactored library UDisplay (#24007)
 
 ### Fixed
 - TLS fix ECDSA and add `SetOption165 1` to enable ECDSA in addition to RSA (#24000)
 - Extension Manager exception when `OtaUrl` is not defined or invalid
+- HASPmota exception in `cpicker` (colorwheel) (#24010)
+- Extension Manager Light Theme support and Extensions input field control
 
 ### Removed
 
