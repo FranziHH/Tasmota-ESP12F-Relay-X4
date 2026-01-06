@@ -10,7 +10,6 @@
 
 import "./core/param_encoder" as encode_constraints
 
-#@ solidify:breathe,weak
 class breathe : animation.animation
   # Non-parameter instance variables only
   var breathe_provider # Internal breathe color provider
@@ -44,10 +43,10 @@ class breathe : animation.animation
     super(self).on_param_changed(name, value)
     # Propagate relevant parameters to the breathe provider
     if name == "color"
-      # When color is set, update the breathe_provider's base_color
+      # When color is set, update the breathe_provider's color
       # but keep the breathe_provider as the actual color source for rendering
       if type(value) == 'int'
-        self.breathe_provider.base_color = value
+        self.breathe_provider.color = value
         # Restore the breathe_provider as the color source (bypass on_param_changed)
         self.values["color"] = self.breathe_provider
       end
