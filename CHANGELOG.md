@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 
 ## [15.3.0.1]
 ### Added
+- Support for Sensirion SCD43 CO2 sensor
 
 ### Breaking Changed
 
 ### Changed
+- LVGL library from v9.4.0 to v9.5.0
+- Matter improved parameters handling
 
 ### Fixed
 
