@@ -22,6 +22,7 @@ managed_components
 .gcc-flags.json
 .cache
 .dummy
+compile_commands.json
 sdkconfig.*
 sdkconfig.defaults
 CMakeLists.txt
