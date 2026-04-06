@@ -1,5 +1,10 @@
 # Changelog
 
+[v26.4.6.0]
+### Fixed
+- GUI cache timer overflow
+- Lock/Unlock icons
+
 [v25.1.19.0]
 ### Changed
 - LoRaWan End Device configuration Decoder File drop down box based on decoder files within `LoRaWan_Decoders.tapp` using function `path.listdir(<.tapp file>)` from Tasmota v15.2.0.3 before using the filelist (Theo Arends)
