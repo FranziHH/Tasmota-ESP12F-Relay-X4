@@ -36,6 +36,8 @@ tasmota/user_config_*
 !tasmota/user_config_override.h
 !tasmota/user_config_ESP12F_Relay_X4.h
 !tasmota/user_config*sample.h
+tasmota/tasmota_defines_for_berry.h
+tasmota/tasmota_defines_for_berry.be
 tasmota/include/local_ca_data.h
 tasmota/include/local_ca_descriptor.h
 variants
