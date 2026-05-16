@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support for Modbus RX Enable GPIO (#24726)
 - Support for hostname generation using single-specifier Format() patterns (#24731)
+- Support for M5Stack Atom S3R drivers
 
 ### Breaking Changed
 
@@ -15,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Berry `format()` now uses internal `ext_snprintf_P()` for floating point formatting (#24725)
 - ESP8266 wrap printf and replace with stubs reducing flash size by 6k (#24714)
 - LVGL splash screen uses default Montserrat-14 instead of Montserrat-20 on small screens (#24735)
+- Move autoconf repository to `ota.tasmota.com`
 
 ### Fixed
 - NeoPool possible overflow/div-zero errors and Hydrolysis module detection (#24724)
