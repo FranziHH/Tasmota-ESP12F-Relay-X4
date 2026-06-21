@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Serial console support for Backspace when enabling `#define USE_SERIAL_BACKSPACE` (#24830)
 - Build copy firmware artifacts with ELF-extracted build timestamp (opt-in) (#24794)
+- Enhance Matter plugin functionality for On/Off control and add support for Global Scene Control and related commands (#24854)
+- Command `BSSid[1|2] [0|1|11:22:33:44:55:66]` to select fixed WiFi Access Point disabling `SetOption56` and `SetOption57` (#24394)
 
 ### Breaking Changed
 
@@ -19,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - Berry optimized solidified structures for code constants and maps (#24838)
 
 ### Fixed
+- SML modbus/TCP on ESP32-p4 with only Ethernet shows "SML: could not connect TCP since wifi is down" (#24845)
 
 ### Removed
 
