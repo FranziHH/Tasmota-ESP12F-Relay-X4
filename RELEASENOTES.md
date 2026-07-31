@@ -114,6 +114,7 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 
 ## Changelog v15.5.0.2
 ### Added
+- Support for baudrate 74880 replacing 74700 [#24924](https://github.com/arendst/Tasmota/issues/24924)
 - TLS support for EC P-384 curve in server certificate [#24909](https://github.com/arendst/Tasmota/issues/24909)
 - MagicSwitch configurable masking window fixing problems with multiple false triggering [#24888](https://github.com/arendst/Tasmota/issues/24888)
 - Berry `bytes` methods `setbits`/`getbits` transposed to native and support for big endian [#24857](https://github.com/arendst/Tasmota/issues/24857)
@@ -130,7 +131,11 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 ### Fixed
 - Default button/switch actions on builds without rules regression from v15.4.0.2 [#24871](https://github.com/arendst/Tasmota/issues/24871)
 - PZEM/Modbus energy monitor Exception crash-loop on ESP8266 regression from v15.5.0 [#24883](https://github.com/arendst/Tasmota/issues/24883)
+- Can sniffer functionality [#18287](https://github.com/arendst/Tasmota/issues/18287)
 - Udisp SPI for mono color display [#24899](https://github.com/arendst/Tasmota/issues/24899)
+- Minor fixes in `LList` [#24927](https://github.com/arendst/Tasmota/issues/24927)
+- TLS fix public key fingerprint for ECDSA certificates [#24928](https://github.com/arendst/Tasmota/issues/24928)
+- Reset BLE scan flag on new operation [#24925](https://github.com/arendst/Tasmota/issues/24925)
 - BLE EQ3 float output in mqtt messages regression from v15.4.0.2 [#24869](https://github.com/arendst/Tasmota/issues/24869)
 
 ### Removed
