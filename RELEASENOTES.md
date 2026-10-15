@@ -75,8 +75,8 @@ Historical binaries can be downloaded from
 
 The latter links can be used for OTA upgrades too like ``OtaUrl http://ota.tasmota.com/tasmota/release/tasmota.bin.gz``
 
-### ESP32, ESP32-C2, ESP32-C3, ESP32-C5, ESP32-C6, ESP32-P4, ESP32-S2 and ESP32-S3 based
-The following binary downloads have been compiled with ESP32/Arduino library core version **v3.3.8**.
+### ESP32, ESP32-C2, ESP32-C3, ESP32-C5, ESP32-C6, ESP32-C61, ESP32-P4, ESP32-P4R3, ESP32-S2 and ESP32-S3 based
+The following binary downloads have been compiled with ESP32/Arduino library core version **v3.3.12**.
 
 - **tasmota32.bin** = The Tasmota version with most drivers including additional sensors and KNX for 4M+ flash.  **RECOMMENDED RELEASE BINARY**
 - **tasmota32solo1.bin** = The Tasmota version with most drivers including additional sensors and KNX for single core ESP32 and 4M+ flash.
@@ -84,7 +84,9 @@ The following binary downloads have been compiled with ESP32/Arduino library cor
 - **tasmota32c3.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-C3 with USB HWCDC and fallback to serial and 4M+ flash.
 - **tasmota32c5.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-C5 with USB HWCDC and fallback to serial and 4M+ flash.
 - **tasmota32c6.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-C6 with USB HWCDC and fallback to serial and 4M+ flash.
-- **tasmota32p4.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-P4 with USB HWCDC and fallback to serial and 4M+ flash.
+- **tasmota32c61.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-C61 with USB HWCDC and fallback to serial and 4M+ flash.
+- **tasmota32p4.bin** = The Tasmota version with most drivers including additional sensors and KNX for first generation ESP32-P4 with USB HWCDC and fallback to serial and 4M+ flash.
+- **tasmota32p4r3.bin** = The Tasmota version with most drivers including additional sensors and KNX for new generation ESP32-P4 with USB HWCDC and fallback to serial and 4M+ flash.
 - **tasmota32s2.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-S2 with serial and 4M+ flash.
 - **tasmota32s2cdc.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-S2 with serial over embedded USB CDC only and 4M+ flash.
 - **tasmota32s3.bin** = The Tasmota version with most drivers including additional sensors and KNX for ESP32-S3 with USB HWCDC and fallback to serial and 4M+ flash.
@@ -114,8 +116,9 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 
 ## Changelog v15.6.0.3
 ### Added
-- Initial support for ESP32-C61 [#25135](https://github.com/arendst/Tasmota/issues/25135)
 - Initial support for ESP32-S31 [#25130](https://github.com/arendst/Tasmota/issues/25130)
+- Support for ESP32-C61 [#25135](https://github.com/arendst/Tasmota/issues/25135)
+- Support for ESP32-P4R3 [#24677](https://github.com/arendst/Tasmota/issues/24677)
 - Support for GUI tooltip on touch media like phones and tablets
 - Support for TFA Dostmann Marbella 868MHz pool thermometer using a CC1101 [#24959](https://github.com/arendst/Tasmota/issues/24959)
 - Support for MI32 Xiaomi Mi Body Composition Scale (MIBCS/MIBFS) [#25049](https://github.com/arendst/Tasmota/issues/25049)
@@ -146,6 +149,7 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 ### Changed
 - ESP8266 platform update from 2026.04.00 to 2026.09.00 [#25072](https://github.com/arendst/Tasmota/issues/25072)
 - ESP32 Platform from 2026.05.50 to 2026.09.50, Framework (Arduino Core) from v3.3.8 to v3.3.12 and IDF from v5.5.4.260407 to v5.5.5 [#25072](https://github.com/arendst/Tasmota/issues/25072)
+- LVGL library from v9.5.0 to v9.6.0 [#25144](https://github.com/arendst/Tasmota/issues/25144)
 - Matter update specs to 1.6.1 (to be used by AI) [#25083](https://github.com/arendst/Tasmota/issues/25083)
 - MQTT connection closed before TCP retransmission could deliver a delayed PINGRESP, now tolerates 2 unanswered pings [#25067](https://github.com/arendst/Tasmota/issues/25067)
 - Command `SetOption46 201..255` init wait 1 to 55 seconds instead of 2010 to 2550 msec [#25035](https://github.com/arendst/Tasmota/issues/25035)
@@ -165,11 +169,14 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 - MiELHVAC Modbus length-based framing, queue writes, FC03 sensor mirror [#24993](https://github.com/arendst/Tasmota/issues/24993)
 - WT32_ETH01 ethernet initialization [#25051](https://github.com/arendst/Tasmota/issues/25051)
 - ESP32 release UART0 console when the template uses its pins [#25047](https://github.com/arendst/Tasmota/issues/25047)
+- HttpClientLight time out reading a body when the server goes silent [#25139](https://github.com/arendst/Tasmota/issues/25139)
+- AsyncHttpClientLight finish a chunked body at the empty line after the last chunk [#25142](https://github.com/arendst/Tasmota/issues/25142)
 - PWM on CDC GPIO [#25106](https://github.com/arendst/Tasmota/issues/25106)
 - Zigbee deferred timer use after free, and the truncated backtrace that hid it [#24979](https://github.com/arendst/Tasmota/issues/24979)
 - Berry rare register allocation bug [#25010](https://github.com/arendst/Tasmota/issues/25010)
 - Matter autoconfiguration after configuration reset [#24997](https://github.com/arendst/Tasmota/issues/24997)
 - Matter commissioning mDNS announcements [#25069](https://github.com/arendst/Tasmota/issues/25069)
 - Matter non-bridge endpoint topology [#25099](https://github.com/arendst/Tasmota/issues/25099)
+- Matter MQTT subscription when Matter is disabled [#25140](https://github.com/arendst/Tasmota/issues/25140)
 
 ### Removed
