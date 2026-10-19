@@ -35,7 +35,7 @@
 
 #ifdef USE_MI_ESP32
 
-#define MI32_VERSION "v26.10.14"
+#define MI32_VERSION "v26.10.17"
 
 /*********************************************************************************************\
   BLE Xiaomi/Mijia (MI) sensor decoding
@@ -45,74 +45,79 @@
   if (#define ESP32 && no #define USE_BLE_ESP32) then xsns_62_esp32_mi.ino is used - the older driver
 
   --------------------------------------------------------------------------------------------
-  Version yyyymmdd  Action    Description
+  Version yyyymmdd  Action     Description
   --------------------------------------------------------------------------------------------
-  26.10.14          added   - BTHome events to GUI
-  26.9.27           changed - Add age of battery reading to battery icon
-  26.9.11           changed - Make battery requests independent from M32Period to extend battery life (LYWSD02MMC)
-                              Fix "M32Period 0" and "M32Period 1"
+  26.10.17          breaking - BTHome un-reverse MAC address usage for command MI32Keys to make it consistent
+                    added    - Support OUI wildcard for command MI32Keys in case multiple devices use same bindkey (IoTorero)
+  --------
+  26.10.15          added    - BTHome binary events to GUI
+  --------
+  26.9.27           changed  - Add age of battery reading to battery icon
   -------
-  26.9.4            changed - BTHome reset button if datagram received (#25002)
+  26.9.11           changed  - Make battery requests independent from M32Period to extend battery life (LYWSD02MMC)
+                               Fix "M32Period 0" and "M32Period 1"
   -------
-  26.8.31           changed - display icons instead of data lines. disable by removing #define USE_SENSOR_ICON
+  26.9.4            changed  - BTHome reset button if datagram received (#25002)
   -------
-  0.9.3.4 20260823  changed - redesign BTHome events and buffer JSON message for easier rule/script/berry support
+  26.8.31           changed  - display icons instead of data lines. disable by removing #define USE_SENSOR_ICON
   -------
-  0.9.3.3 20260819  changed - fix BTHome decryption of multiple sensors
+  0.9.3.4 20260823  changed  - redesign BTHome events and buffer JSON message for easier rule/script/berry support
   -------
-  0.9.3.2 20260816  changed - BTHome decoding additions
+  0.9.3.3 20260819  changed  - fix BTHome decryption of multiple sensors
   -------
-  0.9.3.1 20260804  changed - BTHome v2 device id table refresh based on https://github.com/Bluetooth-Devices/bthome-ble/blob/V2/src/bthome_ble/const.py
-                              Add BTHome button decoding
-                              Add BTHome binary catch all decoding
+  0.9.3.2 20260816  changed  - BTHome decoding additions
   -------
-  0.9.3.0 20260803  changed - added BTHome v2 decryption
+  0.9.3.1 20260804  changed  - BTHome v2 device id table refresh based on https://github.com/Bluetooth-Devices/bthome-ble/blob/V2/src/bthome_ble/const.py
+                               Add BTHome button decoding
+                               Add BTHome binary catch all decoding
   -------
-  0.9.2.8 20260323  changed - added BTHome v2 protocol support (UUID 0xFCD2)
+  0.9.3.0 20260803  changed  - added BTHome v2 decryption
   -------
-  0.9.2.7 20251204  changed - display RSSI in general format "xx% (-yy dBm)"
-                              view on UI only when BLE enabled
+  0.9.2.8 20260323  changed  - added BTHome v2 protocol support (UUID 0xFCD2)
   -------
-  0.9.2.6 20250503  changed - display alias instead of type, when present
+  0.9.2.7 20251204  changed  - display RSSI in general format "xx% (-yy dBm)"
+                               view on UI only when BLE enabled
   -------
-  0.9.2.5 20250319  changed - added support for MI LYWSD02MMC with different device ID
+  0.9.2.6 20250503  changed  - display alias instead of type, when present
   -------
-  0.9.2.4 20240111  changed - Enhancement of debug log output                              
+  0.9.2.5 20250319  changed  - added support for MI LYWSD02MMC with different device ID
   -------
-  0.9.2.3 20240101  changed - added initial support for MI LYWSD02MMC                              
+  0.9.2.4 20240111  changed  - Enhancement of debug log output                              
   -------
-  0.9.2.2 20231123  changed - added support for Avago Tech Bluetooth buttons                              
+  0.9.2.3 20240101  changed  - added initial support for MI LYWSD02MMC                              
   -------
-  0.9.2.1 20210217  changed - make features alos depend on received data - i.e. 'unknown' devices will show what they send.
-                              Add MI32Option6 1 to switch to tele/tasmota_ble/<somename> style MQTT independent of HASS discovery.
+  0.9.2.2 20231123  changed  - added support for Avago Tech Bluetooth buttons                              
   -------
-  0.9.2.0 20210127  changed - Officially includes as the mi driver when using USE_BLE_ESP32.
+  0.9.2.1 20210217  changed  - make features alos depend on received data - i.e. 'unknown' devices will show what they send.
+                               Add MI32Option6 1 to switch to tele/tasmota_ble/<somename> style MQTT independent of HASS discovery.
   -------
-  0.9.1.9 20201226  changed - All change now.
+  0.9.2.0 20210127  changed  - Officially includes as the mi driver when using USE_BLE_ESP32.
   -------
-  0.9.1.7 20201116  changed - small bugfixes, add BLOCK and OPTION command, send BLE scan via MQTT
+  0.9.1.9 20201226  changed  - All change now.
   -------
-  0.9.1.6 20201022  changed - Beacon support, RSSI at TELEPERIOD, refactoring
+  0.9.1.7 20201116  changed  - small bugfixes, add BLOCK and OPTION command, send BLE scan via MQTT
   -------
-  0.9.1.5 20201021  changed - HASS related ('null', hold back discovery), number of found sensors for RULES
+  0.9.1.6 20201022  changed  - Beacon support, RSSI at TELEPERIOD, refactoring
   -------
-  0.9.1.4 20201020  changed - use BearSSL for decryption, revert to old TELEPERIOD-cycle as default
+  0.9.1.5 20201021  changed  - HASS related ('null', hold back discovery), number of found sensors for RULES
   -------
-  0.9.1.3 20200926  changed - Improve HA discovery, make key+MAC case insensitive
+  0.9.1.4 20201020  changed  - use BearSSL for decryption, revert to old TELEPERIOD-cycle as default
   -------
-  0.9.1.3 20200916  changed - add ATC (custom FW for LYWSD03MMC), API adaption for NimBLE-Arduino 1.0.2
+  0.9.1.3 20200926  changed  - Improve HA discovery, make key+MAC case insensitive
   -------
-  0.9.1.2 20200802  changed - add MHO-C303
+  0.9.1.3 20200916  changed  - add ATC (custom FW for LYWSD03MMC), API adaption for NimBLE-Arduino 1.0.2
   -------
-  0.9.1.1 20200715  changed - add MHO-C401, refactoring
+  0.9.1.2 20200802  changed  - add MHO-C303
   -------
-  0.9.1.0 20200712  changed - add lights and yeerc, add pure passive mode with decryption,
-                              lots of refactoring
+  0.9.1.1 20200715  changed  - add MHO-C401, refactoring
   -------
-  0.9.0.1 20200706  changed - adapt to new NimBLE-API, tweak scan process
+  0.9.1.0 20200712  changed  - add lights and yeerc, add pure passive mode with decryption,
+                               lots of refactoring
   -------
-  0.9.0.0 20200413  started - initial development by Christian Baars
-                    forked  - from arendst/tasmota            - https://github.com/arendst/Tasmota
+  0.9.0.1 20200706  changed  - adapt to new NimBLE-API, tweak scan process
+  -------
+  0.9.0.0 20200413  started  - initial development by Christian Baars
+                    forked   - from arendst/tasmota            - https://github.com/arendst/Tasmota
 \*********************************************************************************************/
 
 #define XSNS_62                62
@@ -501,7 +506,7 @@ struct mi_sensor_t{
     uint8_t button[8]; // BTHome button support
     struct {
       uint8_t first_buttons_overlay[4];
-      uint8_t bthome_event[4]; // BTHome event support
+      uint8_t bthome_binary[4]; // BTHome binary state support
     };
   };
   uint8_t unparsed[4]; // BTHome unparsed object id
@@ -1331,21 +1336,42 @@ int MI32AddKey(char* payload, char* key = nullptr){
 }
 
 int MIDecryptPayload(const uint8_t *macin, const uint8_t *nonce, uint32_t tag, uint8_t *data, int len){
+  uint16_t devicetype = *(uint16_t*)(nonce +6);
   uint8_t payload[len +2];
   uint8_t mac[6];
   memcpy(mac, macin, 6);
-  MI32_ReverseMAC(mac);
+  if (0xFCD2 != devicetype) {  // BTHome
+    MI32_ReverseMAC(mac);
+  }
   uint8_t _bindkey[32] = {0x0};
   const unsigned char authData[16] = {0x11};
   bool foundNoKey = true;
   AddLog(BLE_ESP32::BLELogLevel[LOG_LEVEL_DEBUG], PSTR("M32: %s: Searching key"), MIaddrStr(mac));
   for(uint32_t i = 0; i < MIBLEbindKeys.size(); i++){
-    if(!memcmp(mac, MIBLEbindKeys[i].MAC, 6)){
+    // Check for MI32Key with wildcard (3 or more 0xFF)
+    uint8_t mac_tst[6];
+    uint8_t wildcard_count = 0;
+    for (uint32_t j = 0; j < 6; j++) {
+      mac_tst[j] = mac[j];
+      if (MIBLEbindKeys[i].MAC[j] == 0xFF) {
+        wildcard_count++;
+      }
+    }
+    if (wildcard_count >=3 ) {  // As some 0xFF is valid test for at least three 0xFF (OUI) for wildcard
+      for (uint32_t j = 0; j < 6; j++) {
+        if (MIBLEbindKeys[i].MAC[j] == 0xFF) {
+          mac_tst[j] = 0xFF;
+        }
+      }
+    }
+
+    if(!memcmp(mac_tst, MIBLEbindKeys[i].MAC, 6)){
       memcpy(_bindkey, MIBLEbindKeys[i].key, 16);
       AddLog(BLE_ESP32::BLELogLevel[LOG_LEVEL_DEBUG], PSTR("M32: %s: Decryption key found"), MIaddrStr(mac));
       foundNoKey = false;
       break;
     }
+
   }
   if(foundNoKey){
     AddLog(LOG_LEVEL_DEBUG, PSTR("M32: %s: No key found"), MIaddrStr(mac));
@@ -1357,7 +1383,6 @@ int MIDecryptPayload(const uint8_t *macin, const uint8_t *nonce, uint32_t tag, u
 
   br_ccm_context ctx;
   br_ccm_init(&ctx, &keyCtx.vtable);
-  uint16_t devicetype = *(uint16_t*)(nonce +6);
   if (0xFCD2 == devicetype) {  // BTHome
     br_ccm_reset(&ctx, nonce, 13, 0, len, 4);
   } else {  
@@ -2367,11 +2392,21 @@ void MI32ParseBTHomePacket(const uint8_t * _buf, uint32_t length, const uint8_t 
   bool hasTemp = false;
   bool hasHum  = false;
   uint32_t multi = 0;
-  uint32_t multi_event = 0;
+  uint32_t multi_binary = 0;
   uint32_t multi_unparsed = 0;
   uint32_t last_obj_id = 0;
 
   // Second pass: parse all measurement objects
+  uint8_t current_binary[4] = { 0 };
+  for (uint32_t i = 0; i < sizeof(MIBLEsensors[_slot].bthome_binary); i++) {
+    if (MIBLEsensors[_slot].bthome_binary[i] & 0x7F) {
+      current_binary[i] = MIBLEsensors[_slot].bthome_binary[i] >> 7;
+      MIBLEsensors[_slot].bthome_binary[i] &= 0x7F;  // Reset value, keep obj_id
+    } else {
+      MIBLEsensors[_slot].bthome_binary[i] = 0;
+    }
+  }
+
   int res = 0;
   obj_id = 0;
   idx = 1;
@@ -2497,17 +2532,16 @@ void MI32ParseBTHomePacket(const uint8_t * _buf, uint32_t length, const uint8_t 
 
       case 0x0F ... 0x11:
       case 0x15 ... 0x2D: { // Binary sensor catch all (uint8, 0 or 1)
-        if (0 == multi_event) {  // Reset events
-          for (uint32_t i = 0; i < sizeof(MIBLEsensors[_slot].bthome_event); i++) {
-            MIBLEsensors[_slot].bthome_event[i] = 0;
-          }
-        }
-        if (multi_event < sizeof(MIBLEsensors[_slot].bthome_event)) {
-          MIBLEsensors[_slot].bthome_event[multi_event++] = value_uint << 7 | obj_id;
+        if (multi_binary < sizeof(MIBLEsensors[_slot].bthome_binary)) {
+          uint8_t current_value = MIBLEsensors[_slot].bthome_binary[multi_binary] >> 7;
+          MIBLEsensors[_slot].bthome_binary[multi_binary++] = value_uint << 7 | obj_id;
           MIBLEsensors[_slot].feature.events  = 1;
-          MIBLEsensors[_slot].eventType.event = 1;
-          MIBLEsensors[_slot].events++;
-          res = 1;
+/*
+          if (current_value != value_uint) {  // Event if changed
+            MIBLEsensors[_slot].eventType.event = 1;
+            res = 1;
+          }
+*/
         }
       } break;
 
@@ -2612,6 +2646,14 @@ void MI32ParseBTHomePacket(const uint8_t * _buf, uint32_t length, const uint8_t 
   if (hasTemp && hasHum) {
     MIBLEsensors[_slot].feature.tempHum   = 1;
     MIBLEsensors[_slot].eventType.tempHum = 1;
+  }
+
+  for (uint32_t i = 0; i < sizeof(MIBLEsensors[_slot].bthome_binary); i++) {
+    if (current_binary[i] != (MIBLEsensors[_slot].bthome_binary[i] >> 7)) {
+      MIBLEsensors[_slot].feature.events  = 1;
+      MIBLEsensors[_slot].eventType.event = 1;
+      res = 1;
+    }
   }
 
   if (res || MI32.option.directBridgeMode) {
@@ -3733,11 +3775,13 @@ void MI32GetOneSensorJson(int slot, int hidename){
 
   } // minimal summary
 
-  if ((p->type == MI_BTHOME) && p->eventType.event) {
-    for (uint32_t i = 0; i < sizeof(p->bthome_event); i++) {
-      if (p->bthome_event[i] > 0) {
-        ResponseAppend_P(PSTR(",\"Evt%d\":%d"),
-          p->bthome_event[i] & 0x7F, p->bthome_event[i] >> 7);
+  if ((p->type == MI_BTHOME) && p->feature.events) {
+    for (uint32_t i = 0; i < sizeof(p->bthome_binary); i++) {
+      if (p->bthome_binary[i] > 0) {
+        if (p->eventType.event) {
+          ResponseAppend_P(PSTR(",\"Evt%d\":%d"), p->bthome_binary[i] & 0x7F, p->bthome_binary[i] >> 7);
+        }
+        ResponseAppend_P(PSTR(",\"State%d\":%d"), p->bthome_binary[i] & 0x7F, p->bthome_binary[i] >> 7);
       }
     }
   }
@@ -4503,10 +4547,21 @@ void MI32Show(bool json)
         WSContentSend_P(SI_WEB_LINE_START);
         if (p->feature.events){
           if (p->type == MI_BTHOME) {
-            for (uint32_t i = 0; i < sizeof(p->bthome_event); i++) {
-              if (p->bthome_event[i] > 0) {
-                uint32_t event = p->bthome_event[i] >> 7;
-                WSContentSend_PD(PSTR(" %d&#xFE0F;&#x20E3; %d"), i +1, event);  // 1️⃣ .. 8️⃣
+            uint32_t count = 0;
+            for (uint32_t i = 0; i < sizeof(p->bthome_binary); i++) {
+              if (p->bthome_binary[i] > 0) {
+                count++;
+              }
+            }
+            for (uint32_t i = 0; i < sizeof(p->bthome_binary); i++) {
+              if (p->bthome_binary[i] > 0) {
+                uint32_t state = p->bthome_binary[i] >> 7;
+                if (1 == count) {
+                  WSContentSend_PD(PSTR(" &#x1F3C1; %d"), state);  // 🏁
+                } else {
+                  uint32_t obj_idx = p->bthome_binary[i] & 0x7F;
+                  WSContentSend_PD(PSTR(" &#x1F3C1;%d %d"), obj_idx, state);  // 🏁
+                }
               }
             }
           } else {

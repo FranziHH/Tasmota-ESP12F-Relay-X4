@@ -3,7 +3,27 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [15.6.0.3]
+## [16.0.0.1]
+### Added
+- Support OUI wildcard for command MI32Keys in case multiple devices use same bindkey like IoTorero: `mi32keys 0C3D5EFFFFFF=48656c6c6f204254486f6d65210d0a00`
+- uDisplay support for SPI QSPI displays
+
+### Breaking Changed
+- BTHome un-reverse MAC address usage for command `MI32Keys` to make it consistent
+
+### Changed
+
+### Fixed
+
+### Removed
+
+
+## [Released]
+
+## [16.0.0] 20261016
+- Release Theo
+
+## [15.6.0.3] 20261016
 ### Added
 - LVGL option to prefer PSRAM for draw buffers using bit 5 (0x20) of `:B` in display.ini (#25120)
 - Matter support for Light RBG+CT (5 channels) and refactoring of lights
@@ -11,9 +31,6 @@ All notable changes to this project will be documented in this file.
 - Matter Wi-Fi Network Diagnostics cluster (BSSID, security, Wi-Fi version, channel, RSSI) (#25126)
 - Berry `tasmota.wifi()` reports `channel`, `security` and `phy` (#25126)
 - Initial support for ESP32-C61 (#25135)
-
-### Breaking Changed
-
 
 ### Changed
 - LVGL library from v9.5.0 to v9.6.0 (#25144)
@@ -24,9 +41,7 @@ All notable changes to this project will be documented in this file.
 - Matter MQTT subscription when Matter is disabled (#25140)
 - HttpClientLight time out reading a body when the server goes silent (#25139)
 - AsyncHttpClientLight finish a chunked body at the empty line after the last chunk (#25142)
-
-### Removed
-
+- Berry webclient.connected() was implemented but not exposed (#25145)
 
 ## [15.6.0.2] 20261008
 ### Added
@@ -86,8 +101,6 @@ All notable changes to this project will be documented in this file.
 - WT32_ETH01 ethernet initialization (#25051)
 - Touch GT911 fix template (#25068)
 - Matter commissioning mDNS announcements (#25069)
-
-## [Released]
 
 ## [15.6.0] 20260825
 - Release Sylvie
