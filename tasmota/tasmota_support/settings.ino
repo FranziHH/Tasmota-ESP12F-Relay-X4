@@ -45,8 +45,6 @@ void RtcSettingsSave(void) {
     if (RTC_MEM_VALID != RtcSettings.valid) {
       memset(&RtcSettings, 0, sizeof(RtcSettings));
       RtcSettings.valid = RTC_MEM_VALID;
-//      RtcSettings.ex_energy_kWhtoday = Settings->energy_power_calibration2;  // = ex_energy_kWhtoday
-//      RtcSettings.ex_energy_kWhtotal = Settings->power_lock;
       for (uint32_t i = 0; i < 3; i++) {
         RtcSettings.energy_kWhtoday_ph[i] = Settings->energy_kWhtoday_ph[i];
         RtcSettings.energy_kWhtotal_ph[i] = Settings->energy_kWhtotal_ph[i];
@@ -717,11 +715,6 @@ char* SettingsText(uint32_t index) {
  * Config Save - Save parameters to Flash ONLY if any parameter has changed
 \*********************************************************************************************/
 
-void UpdateBackwardCompatibility(void) {
-  // Perform updates for backward compatibility
-  strlcpy(Settings->user_template_name, SettingsText(SET_TEMPLATE_NAME), sizeof(Settings->user_template_name));
-}
-
 uint32_t GetSettingsAddress(void) {
   return settings_location * SPI_FLASH_SEC_SIZE;
 }
@@ -737,7 +730,6 @@ void SettingsSave(uint8_t rotate) {
  */
 #ifndef FIRMWARE_MINIMAL
   XsnsXdrvCall(FUNC_SAVE_SETTINGS);
-  UpdateBackwardCompatibility();
   if ((GetSettingsCrc32() != settings_crc32) || rotate) {
     if (1 == rotate) {                                 // Use eeprom flash slot only and disable flash rotate from now on (upgrade)
       TasmotaGlobal.stop_flash_rotate = 1;
@@ -983,7 +975,6 @@ void SettingsDefaultSet2(void) {
   SysMBitfield2  mbflag2 = { 0 };
 
 #ifdef ESP8266
-  Settings->gpio16_converted = 0xF5A0;
 //  Settings->config_version = 0;  // ESP8266 (Has been 0 for long time)
 #endif  // ESP8266
 #ifdef ESP32
@@ -1241,9 +1232,6 @@ void SettingsDefaultSet2(void) {
 //  Settings->energy_max_power_limit = 0;                            // MaxPowerLimit
   Settings->energy_max_power_limit_hold = MAX_POWER_HOLD;
   Settings->energy_max_power_limit_window = MAX_POWER_WINDOW;
-//  Settings->ex_energy_max_power_safe_limit = 0;                    // MaxSafePowerLimit
-//  Settings->ex_energy_max_power_safe_limit_hold = SAFE_POWER_HOLD;
-//  Settings->ex_energy_max_power_safe_limit_window = SAFE_POWER_WINDOW;
 //  Settings->energy_max_energy = 0;                                 // MaxEnergy
 //  Settings->energy_max_energy_start = 0;                           // MaxEnergyStart
 //  Settings->energy_kWhtotal_ph[0] = 0;
