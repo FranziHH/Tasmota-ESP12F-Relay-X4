@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ## [16.0.0.3]
 ### Added
-
+- Matter Doorbell (0x0148) device type mapped to a Button, with fabric-scoped Binding storage (Chime client not yet implemented) (#25187)
 
 ### Breaking Changed
 
