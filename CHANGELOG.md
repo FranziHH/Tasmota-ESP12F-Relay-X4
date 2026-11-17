@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - IR receive optional check every loop (`#define IR_RCV_IN_LOOP`)  and configurable save buffer (`#define IR_FULL_RCV_SAVE_BUFFER`) (#25268)
 - MQTT optional FileDownload and FileUpload transferring a file system file (`#define USE_UFILESYS_MQTT`) (#25278)
-- Matter Boolean State StateChange event for Contact, Rain and Water Leak sensors
+- Matter Boolean State StateChange event for Contact, Rain and Water Leak sensors (#25286)
 
 ### Breaking Changed
 - Matter lights Level Control MinLevel 1 and On/Off behavior aligned with Matter 1.6.1 (#25279)
@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - GPIOViewer fails to execute, regression from platform 2026.11.50 with Framework v3.3.12-2 (#25275)
 - Display palette colors on monochrome universal displays (#25260)
+- TashMesh and WizMote ESP-NOW support for IDF v5.5.5 (#25289)
 
 ### Removed
 
