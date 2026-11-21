@@ -16,7 +16,11 @@ This project deals with the [4-CHANNEL X4 RELAY MODULE](https://ayatec.eu/introd
 
 ### Connections
 
+<<<<<<< HEAD
 <img src="/images/IMG_20250311_135625.jpg" height="400px" title="Relay Connections">   
+=======
+Tasmota is open-source firmware born for the **ESP8266**/**ESP8285**, now covering the whole ESP32 family: **ESP32**, **ESP32-S2**, **ESP32-S3**, **ESP32-C2**, **ESP32-C3**, **ESP32-C5**, **ESP32-C6**, **ESP32-C61**, **ESP32-P4**, **ESP32-S31**, with PSRAM and USB/CDC support where available.
+>>>>>>> development
 
 ##### Relays
 - RY1 - IO 15
