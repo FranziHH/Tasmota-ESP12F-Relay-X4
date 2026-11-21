@@ -3,10 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [16.0.0.6]
+## [16.0.0.7]
 ### Added
-- Add support for drivers and sensors up to 159
-- Berry `crypto.SHA384` hash class
+
 
 ### Breaking Changed
 
@@ -15,10 +14,18 @@ All notable changes to this project will be documented in this file.
 
 
 ### Fixed
-
+- Removed migration steps from v9.1.0 to v9.5.0.9 as regression from v16.0.0.3 (#25286)
 
 ### Removed
 
+
+## [16.0.0.6] 20261120
+### Added
+- Add support for drivers and sensors up to 159
+- Berry `crypto.SHA384` hash class (#25311)
+
+### Changed
+- Allow larger AsyncHttpClientLight response bodies (#25291)
 
 ## [16.0.0.5] 20261119
 ### Added
